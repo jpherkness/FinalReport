@@ -15,7 +15,6 @@
 \usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
 
 %\documentstyle[times,art10,twocolumn,latex8]{article}
-
 %------------------------------------------------------------------------- 
 % take the % away on next line to produce the final camera-ready version 
 \pagestyle{empty}
@@ -100,7 +99,7 @@ The result of performing such an algorithm is the identification of all simple d
   \caption{Identifying simple deadlocks}
 \begin{algorithmic}[1]
   \Function {IdentifySimpleDeadlocks}{}
-    \State $stack\gets \textnormal{empty set}$
+    \State $stack\gets \textnormal{goals}$
     \State $visited\gets \textnormal{empty set}$
     \While { stack not empty }
       \State $position\gets stack.pop()$
@@ -143,23 +142,26 @@ The algorithm for detecting freeze deadlocks is rather intuitive, since we only 
 \begin{algorithm}
   \caption{Identifying freeze deadlocks}
 \begin{algorithmic}[1]
-  \Function {IdentifyFreezeDeadlocks}{position}
+  \State $frozen \gets \textnormal{empty set}$
+  \State $visited \gets \textnormal{empty set}$
+  \Function {Frozen}{position}
+    \State $\textnormal{add position to visited}$
     \If { wall on left or right }
-      \State $horizontallyBlocked\gets true$
+      \State $h\gets true$
     \ElsIf { simple deadlock on on left and right }
-      \State $horizontallyBlocked\gets true$
+      \State $h\gets true$
     \ElsIf { box on left or right }
-      \State $horizontallyBlocked\gets IdentifyFreezeDeadlocks(left) or IdentifyFreezeDeadlocks(right)$
+      \State $h\gets \textnormal{Frozen(left) or Frozen(right)}$
     \EndIf
 
     \If { wall on up or down }
-      \State $verticallyBlocked\gets true$
+      \State $v\gets true$
     \ElsIf { simple deadlock on on up and down }
-      \State $verticallyBlocked\gets true$
+      \State $v\gets true$
     \ElsIf { box on up or down }
-      \State $verticallyBlocked\gets IdentifyFreezeDeadlocks(up) or IdentifyFreezeDeadlocks(down)$
+      \State $v\gets \textnormal{Frozen(up) or Frozen(down)}$
     \EndIf
-    \State \Return horizontallyBlocked and verticallyBlocked
+    \State \Return $\textnormal{h and v and all frozen on goals}$
   \EndFunction
   \end{algorithmic}
 \end{algorithm}
