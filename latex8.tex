@@ -191,6 +191,79 @@ The following Q-Learning algorithm [3][6] will be used to determine the optimal 
 
 One of the most critical aspects of the algorithm is identifying if the current state is a terminal state. In the case of Sokoban, a terminal state is defined as a state where the puzzle is solved, or a state that is no longer solvable. The following predicates will be used to [1] analyze the state and determine if it has reached a terminal state.
 
+\begin{algorithm}
+  \caption{Solver for Sokoban using q learning}
+  \begin{algorithmic}[2]
+    \Function {QLearning}{state, episodes}
+      \State $Q\gets \textnormal{empty set}$
+      \For {episode = episodes}
+        \State $Q\gets \textnormal{RunEpisode(Q)}$
+      \EndFor
+      \Return Q
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{Runs a single episode of q learning}
+  \begin{algorithmic}[3]
+    \Function {RunEpisode}{state, Q}
+      \State $state\gets \textnormal{initial state}$
+      \While {not Terminal?(state)}
+        \State $action\gets \textnormal{MaximizeAction(state, Q)}$
+        \State $resultState\gets \textnormal{TakeAction(state, action)}$
+        \State $Q(state, action)\gets \textnormal{$Q(state, action) + LEARNING_RATE 
+                * [Reward(state, action) + DISCOUNT_FACTOR 
+                * MaximizeQ(resultState) - $Q(state, action)}$
+      \EndWhile
+      \Return Q
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{Returns the maximum q value reachable from a state in a single action}
+  \begin{algorithmic}[4]
+    \Function {MaximizeQ}{state, Q}
+      \State $max\gets \textnormal{negative infinity}$
+      \For {action = up, right, down, left}
+        \If {Q(state, action) > max}
+          \State $max\gets \textnormal{Q(state, action)}$
+        \EndIf
+      \EndFor
+      \Return max
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{Returns the action which will acheive the maximum q value reachable from a state}
+  \begin{algorithmic}[5]
+    \Function {MaximizeAction}{state, Q}
+      \State $max\gets \textnormal{negative infinity}$
+      \State $max actions\gets \textnormal{empty set}$
+      \For {action = up, right, down, left}
+        \If {Q(state, action) > max}
+          \State $max\gets \textnormal{Q(state, action)}$
+          \State $max actions\gets \textnormal{set with action}$
+        \Else
+          \State $max actions\gets \textnormal{max actions + action}$
+        \EndIf
+      \EndFor
+      \Return random action from max actions
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{Returns the resulting state after an action is taken on an intial state}
+  \begin{algorithmic}[6]
+    \Function {MaximizeQ}{state, action}
+      \Return outcome of state after action is taken
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
 %------------------------------------------------------------------------- 
 \Section{Experimental Analysis}
 
