@@ -53,6 +53,10 @@ Q-Learning is a form of model-free reinforcement learning that provides agents w
 
 Sokoban has been proven to be a PSPACE-Complete problem [1]. Other approaches to this problem include BFS, DFS, and solvers employing heuristic functions such as A* search.
 
+The problem of solving a sokoban puzzle is often compared to the real world problem of programming an autonomous robot to work in a warehouse. Such a robot would be required to navigate the warehouse, as well as perform its designated tasks, using only the information in its immediate vicinity. If such a robot’s task were to move crates into a storage location, then the two problems would be synonymous. In this case, a similar solution could be used to solve both problems. If Q-Learning proves to be a valid solution to the sokoban problem, it’s application to real world problems could prove to be limitless.
+
+If, however, there was more than a single agent acting within the environment, the basic Q-Learning approach will fail. For example, imagine a situation where multiple autonomous robots are each moving boxes within a warehouse from location to location. If a basic Q-Learning approach was implemented, these robots would begin to interfere with one another. To fix this, the robots would need some way to communicate learned information to and from one another [7].
+
 %------------------------------------------------------------------------ 
 \Section{Sokoban}
 
