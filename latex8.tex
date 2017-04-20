@@ -1,0 +1,178 @@
+
+%
+%  $Description: Author guidelines and sample document in LaTeX 2.09$ 
+%
+%  $Author: ienne $
+%  $Date: 1995/09/15 15:20:59 $
+%  $Revision: 1.4 $
+%
+
+\documentclass[times, 10pt,twocolumn]{article} 
+\usepackage{latex8}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{algorithm}% http://ctan.org/pkg/algorithms
+\usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
+
+%\documentstyle[times,art10,twocolumn,latex8]{article}
+
+%------------------------------------------------------------------------- 
+% take the % away on next line to produce the final camera-ready version 
+\pagestyle{empty}
+
+%------------------------------------------------------------------------- 
+\begin{document}
+
+\title{Solving Sokoban Using Q-Learning}
+
+\author{Joseph Herkness\\
+Oakland University\\
+jpherkness@oakland.edu\\
+\and
+Joshua Herkness\\
+Oakland University\\
+jrherkness@oakland.edu\\
+}
+
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+   This paper describes a Q-Learning based algorithm used to determine the solution to a sokoban puzzle. The nature of Sokoban, as a finite decision problem, means that a Reinforcement Learning approach can be used to identify the problems optimal policy. Q-Learning is a Reinforcement Learning technique that constructs the optimal policy through recording the utility of executing an action on a given state. 
+\end{abstract}
+
+%\begin{keyword}Sokoban, Solver, Q-Learning, Reinforcement Learning, Machine Learning
+%\end{keyword}
+
+%------------------------------------------------------------------------- 
+\Section{Introduction}
+
+Q-Learning is a form of model-free reinforcement learning that provides agents with the capability to develop a strategy for solving an instance of a problem. Model-free learning differs from model-based learning in that it does not require a pre constructed model of the problem in order to derive a solution. Instead, Q-Learning derives the solution through exploring the problem space, much like many dynamic programming concepts. In this paper, a Q-Learning algorithm, that identifies the solution to a Sokoban puzzle, will be explained. A Sokoban puzzle is a grid based logic puzzle where a player pushes boxes around a warehouse, the ultimate goal being to position these boxes on top of every goal. The typical Q-Learning approach will be improved upon through an analysis of potential traps in each state, as well as adjustments to the learning rate and discount factor through dynamic modification as episodes progress. 
+
+%------------------------------------------------------------------------- 
+\SubSection{Motivation}
+
+Sokoban has been proven to be a PSPACE-Complete problem [1]. Other approaches to this problem include BFS, DFS, and solvers employing heuristic functions such as A* search.
+
+%------------------------------------------------------------------------ 
+\Section{Sokoban}
+
+Sokoban is two dimensional puzzle game. Each Sokoban level consists of a rectangular grid representing a warehouse. The warehouse contains many different entities, such as boxes, goals, walls, and the player themselves. Each entity is restricted to the two dimensional grid of the warehouse. In order to solve the puzzle, the player must push each box such that it covers one of the goals. When every goal has been covered by a box, the puzzle is considered solved. A valid Sokoban puzzle must contain a number of boxes equal to the number of goals. Each action that the player takes has the potential of placing the level in a deadlock. If a deadlock is created, the level is no longer solvable, and the player has lost.
+
+The level shown in figure \ref{fig:b} is the simplest solvable sokoban level that can be made. The state on the right is the initial state, and the state on the left is the final state. The solution to the puzzle is to simply move to the right one space. This action pushes the box onto the goal, solving the level.
+
+\begin{figure}[h] 
+  \centering
+     \includegraphics[width=0.7\linewidth]{basic_unsolved_solved.png}
+  \caption{The simplest solvable sokoban level (left) and the solved state (right).}
+  \label{fig:b}
+\end{figure}
+
+%------------------------------------------------------------------------- 
+\SubSection{Rules}
+
+During each turn, the player has the ability to move in one of four directions - up, down, left, or right. A square is considered empty if it does not contain a wall or box. If the square corresponding to the direction moved contains a box, and the next square is considered empty, the box is pushed into that square. The player is allowed to move into any empty square. When every goal has been covered by a box, the puzzle is considered solved, and the game ends.
+
+%------------------------------------------------------------------------- 
+\SubSection{Deadlocks}
+
+A deadlock is a configuration of boxes that results in an unsolvable level [1]. A state is considered deadlocked if it contains at least one deadlock. Any action that the player takes has the potential of placing the level in a deadlocked state. If such a state is encountered, any attempt to solve the level should no longer be pursued, even if there are still valid actions that can be applied to the deadlocked state. While there are numerous types of deadlocks, two that are necessary for complete deadlock detection are simple deadlocks and freeze deadlocks. Implementation of the detection of these two deadlock types results in the ability to detect whether or not a action creates a deadlocked state. 
+
+%------------------------------------------------------------------------- 
+\SubSection{Simple Deadlocks}
+
+Simple deadlocks are squares in the level that create a deadlock whenever a box is pushed into them. Pushing a block into a simple deadlock square creates a deadlock because the box in that square can no longer be pushed to a goal. These simple deadlock squares are independent of the positions of the boxes in the level, and do not change. This means that simple deadlock squares can be identified when the initial level is loaded. 
+
+The algorithm for identifying simple deadlock squares is rather intuitive. By definition, if a box cannot be pushed from a square to one of the goals, the square is considered to be a simple deadlock square. Likewise, if a box cannot be pulled from one of the goals to that square, it means the same thing. This mean that all valid squares can be identified by removing all boxes from the level, placing a box on each goal square, pulling the box away in all directions, and marking all reachable squares as visited. Every square that is not marked as visited is a simple deadlock square. 
+
+If we consider the level in figure \ref{fig:sd}, where the simple deadlock squares are crossed off, the algorithm becomes a little more clear. First we remove all boxes from the level. We then place an imaginary box on the goal and pull it in each direction. Since we cannot pull the box up, the space directly above the goal is a simple deadlock space. Since we cannot pull the box down, the square directly below the goal is a simple deadlock square. However, since we can pull the box to the left, the square directly to the left of the goal is considered a valid square. This square is then marked as visited, and we repeat the algorithm on this new square. 
+
+\begin{figure}[h] 
+  \centering
+     \includegraphics[width=0.5\linewidth]{simple_deadlock.png}
+  \caption{The simple deadlock squares are identified in this level and marked.}
+  \label{fig:sd}
+\end{figure}
+
+The result of performing such an algorithm is the identification of all simple deadlock squares. When a box is moved, we can check the see if the square it is moved into is a simple deadlock square. If it is a simple deadlock square, we know there is a deadlock and the level can no longer be solved.
+
+\begin{algorithm}
+  \caption{Identifying simple deadlocks}
+\begin{algorithmic}[1]
+  \Function {IdentifySimpleDeadlocks}{}
+    \State $stack\gets \textnormal{empty set}$
+    \State $visited\gets \textnormal{empty set}$
+    \While { stack not empty }
+      \State $position\gets stack.pop()$
+      \State visited.add(position)
+      \For {direction = up, down, left, right}
+        \If {can pull position in direction}
+          \State $valid\gets \textnormal{move position in direction}$
+          \State stack.add(position)
+        \EndIf
+      \EndFor
+    \EndWhile
+    \Return all squares - visited
+  \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+%------------------------------------------------------------------------- 
+\SubSection{Freeze Deadlocks}
+
+Freeze deadlocks are configurations of boxes and walls that result in a deadlocked state. Unlike the simple deadlock squares, freeze deadlocks depend on the position of boxes in the level. This means that we must check for a freeze deadlock anytime a box is moved in the level. 
+
+The level in figure \ref{fig:f} demonstrates an example of a freeze state. Notice how if either box is pushed up, it will be moved into a simple deadlock square. Since we can not push either box up, they are both blocked along the vertical axis. Since the blocks are side by side, any attempt to push the boxes left or right will fail. This mean each box is blocked along the vertical axis. Since both boxes are blocked along the vertical and horizontal axis, the entire configuration is considered a freeze deadlock, meaning no box in the configuration can be moved. However, if all boxes in the configuration are on goals, the level is considered to be in a semi-solved state, and there is no freeze deadlock. An example of such a configuration can be seen in figure \ref{fig:fok}.
+
+\begin{figure}[h] 
+  \centering
+     \includegraphics[width=0.5\linewidth]{freeze_deadlock.png}
+  \caption{The configuration of boxes in this level creates a freeze deadlock.}
+  \label{fig:f}
+\end{figure}
+
+\begin{figure}[h] 
+  \centering
+     \includegraphics[width=0.5\linewidth]{freeze_deadlock_ok.png}
+  \caption{Since the boxes in this level are frozen on top of the goals, no freeze deadlock is created.}
+  \label{fig:fok}
+\end{figure}
+
+%------------------------------------------------------------------------- 
+\SubSection{Notation}
+
+%------------------------------------------------------------------------- 
+\Section{Related Work}
+
+%------------------------------------------------------------------------- 
+\Section{Q-Learning}
+
+Q-Learning is one of the most prominent reinforcement learning techniques. This techniques can be used to find the optimal actions that should be taken for any given finite decision problem. In this technique, a single agent, aware of its current state, learns its environment through exploration; this is accomplished through consideration of past states and future reward for a given action on a state. An agent is placed into its environment at an initial state (s) and begins by taking some arbitrary action (a). Once this action is taken, the Q-value for the given state (s), after taking that action (a), is updated. The agent is said to have learned from this action (a), and will use this learned reward in the future if it encounters this state (s) again. The Q-value for taking an action (a) at a state (s) is defined as \cite{ex1}:
+
+$$Q(s, a) = Q(s, a) + α[R(s, a) + γ max_a′Q(s′, a′) - Q(s, a)]$$
+
+Where α is the Learning Rate of the agent, and γ is the Discount Factor of the agent.
+
+%------------------------------------------------------------------------- 
+\SubSection{Rewards}
+
+%------------------------------------------------------------------------- 
+\SubSection{Algorithm}
+
+The following Q-Learning algorithm [3][6] will be used to determine the optimal strategy for solving a given Sokoban puzzle. In the algorithm, an episode represents one iteration from initial state to terminal state. Numerous episodes will be executed in sequence, allowing the agent to learn which actions produce the greatest reward. The greater the number of episodes, the more optimal the solution will become. When the q-values converge, meaning they stop changing between episodes, the optimal solution will be found.
+
+One of the most critical aspects of the algorithm is identifying if the current state is a terminal state. In the case of Sokoban, a terminal state is defined as a state where the puzzle is solved, or a state that is no longer solvable. The following predicates will be used to [1] analyze the state and determine if it has reached a terminal state.
+
+%------------------------------------------------------------------------- 
+\Section{Experimental Analysis}
+
+%------------------------------------------------------------------------ 
+\Section{Conclusions}
+
+%------------------------------------------------------------------------- 
+\nocite{ex1,ex2}
+\bibliographystyle{latex8}
+\bibliography{latex8}
+
+\end{document}
+
