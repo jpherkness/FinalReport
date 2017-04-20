@@ -112,7 +112,7 @@ The result of performing such an algorithm is the identification of all simple d
         \EndIf
       \EndFor
     \EndWhile
-    \Return all squares - visited
+    \State \Return all squares - visited
   \EndFunction
   \end{algorithmic}
 \end{algorithm}
@@ -137,6 +137,32 @@ The level in figure \ref{fig:f} demonstrates an example of a freeze state. Notic
   \caption{Since the boxes in this level are frozen on top of the goals, no freeze deadlock is created.}
   \label{fig:fok}
 \end{figure}
+
+The algorithm for detecting freeze deadlocks is rather intuitive, since we only need to check whether a box can be pushed. Since a freeze deadlock is created after pushing a block, it is only neccessary to check if the pushed box is frozen, and possibly the boxes around the pushed box. The following algorithm will identify whether or not pushing a box into a position will create a freeze deadlock.
+
+\begin{algorithm}
+  \caption{Identifying freeze deadlocks}
+\begin{algorithmic}[1]
+  \Function {IdentifyFreezeDeadlocks}{position}
+    \If { wall on left or right }
+      \State $horizontallyBlocked\gets true$
+    \ElsIf { simple deadlock on on left and right }
+      \State $horizontallyBlocked\gets true$
+    \ElsIf { box on left or right }
+      \State $horizontallyBlocked\gets IdentifyFreezeDeadlocks(left) or IdentifyFreezeDeadlocks(right)$
+    \EndIf
+
+    \If { wall on up or down }
+      \State $verticallyBlocked\gets true$
+    \ElsIf { simple deadlock on on up and down }
+      \State $verticallyBlocked\gets true$
+    \ElsIf { box on up or down }
+      \State $verticallyBlocked\gets IdentifyFreezeDeadlocks(up) or IdentifyFreezeDeadlocks(down)$
+    \EndIf
+    \State \Return horizontallyBlocked and verticallyBlocked
+  \EndFunction
+  \end{algorithmic}
+\end{algorithm}
 
 %------------------------------------------------------------------------- 
 \SubSection{Notation}
