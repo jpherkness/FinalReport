@@ -179,9 +179,11 @@ The algorithm for detecting freeze deadlocks is rather intuitive, since we only 
 %------------------------------------------------------------------------- 
 \Section{Q-Learning}
 
-Q-Learning is one of the most prominent reinforcement learning techniques. This techniques can be used to find the optimal actions that should be taken for any given finite decision problem. In this technique, a single agent, aware of its current state, learns its environment through exploration; this is accomplished through consideration of past states and future reward for a given action on a state. An agent is placed into its environment at an initial state (s) and begins by taking some arbitrary action (a). Once this action is taken, the Q-value for the given state (s), after taking that action (a), is updated. The agent is said to have learned from this action (a), and will use this learned reward in the future if it encounters this state (s) again. The Q-value for taking an action (a) at a state (s) is defined as \cite{ex1}:
+Q-Learning is one of the more prominent reinforcement learning techniques. This techniques can be used to find the optimal actions that should be taken for any given markov decision process. A markov dicision process is a mathematical framework used to model decision making problems where the decision are under the agent's control. At any given state $s$ the agent can perform an action $a$. The result of taking action $a$ is the new state $s\prime$. The agent is then awarded a reward of $R_a(s, s\prime)$ for taking action $a$. The agent’s goal is to develop a strategy for solving the problem that results in the highest reward.
 
-$$Q(s, a) = Q(s, a) + α[R(s, a) + γ max_a′Q(s′, a′) - Q(s, a)]$$
+Q-Learning allows a single agent, aware of its current state, to develop a strategy through exploration. This is accomplished through consideration of past states and future reward for performing all possible actions on the current state. An agent is placed into its environment at an initial state $s$ and begins by taking some arbitrary action $a$. Once this action is taken, the Q-value for the given state (s), after taking that action (a), is updated. The agent is said to have learned from this action (a), and will use this learned reward in the future if it encounters this state (s) again. The Q-value for taking an action (a) at a state (s) is defined as \cite{ex1}:
+
+$$Q(s_t, a_t) \gets Q(s_t, a_t) + \alpha \cdot [R_a(s_t, s_{t+1}) + \gamma \cdot max_aQ(s_{t+1}, a) - Q(s_t, a_t)]$$
 
 Where α is the Learning Rate of the agent, and γ is the Discount Factor of the agent.
 
@@ -216,9 +218,7 @@ One of the most critical aspects of the algorithm is identifying if the current 
       \While {not Terminal?(state)}
         \State $action\gets \textnormal{MaximizeAction(state, Q)}$
         \State $resultState\gets \textnormal{TakeAction(state, action)}$
-        \State $Q(state, action)\gets \textnormal{$Q(state, action) + LEARNING_RATE 
-                * [Reward(state, action) + DISCOUNT_FACTOR 
-                * MaximizeQ(resultState) - $Q(state, action)}$
+        \State $\textnormal{update Q value}$
       \EndWhile
       \Return Q
     \EndFunction
@@ -270,6 +270,10 @@ One of the most critical aspects of the algorithm is identifying if the current 
 
 %------------------------------------------------------------------------- 
 \Section{Experimental Analysis}
+
+\SubSection{Rewards}
+
+\SubSection{Learning Rate and Discount Factor}
 
 %------------------------------------------------------------------------ 
 \Section{Conclusions}
