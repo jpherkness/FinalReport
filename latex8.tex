@@ -306,12 +306,16 @@ One of the most critical aspects of the algorithm is identifying if the current 
 %------------------------------------------------------------------------- 
 \Section{Experimental Analysis}
 
+In order to evaluate the performance of our solver, we selected three levels with various difficulty. The levels were classified into three groups, easy, medium, and hard. These difficulties are based on the minimum number of moves required to solve the puzzle, and the number of boxes in the puzzle. In order to understand the exact capabilities of the solver, the following parameters were measured after each episode: the number of moves the agent takes, the average reward the agent received, whether or not the agent was able to solve the puzzle, and the time it took for the agent to complete the episode. 
+
 \begin{figure}[h] 
   \centering
      \includegraphics[width=\linewidth]{images/easy_graph.png}
   \caption{Results for solving an easy level.}
   \label{fig:e}
 \end{figure}
+
+The results from figure \ref{fig:e} demonstrate the solver's ability to identify the optimal action policy after only 100 episodes. Although the number of moves the solver used to solve the puzzle stabilized at 11 after only 70 episodes, the average reward for each episode did not stabilize until episode 100. Instead, the average reward continued to increase until its maximum at episode 100. This demonstrates the ability of the solver to refine the action policy through continuous exploration. Although the agent identified an action policy that would solve the puzzle, they continued to search for an even better action policy. However, since no better action policy was found, the agent continued to use the action policy that they knew would produce the greatest reward.
 
 \begin{figure}[h] 
   \centering
@@ -320,12 +324,17 @@ One of the most critical aspects of the algorithm is identifying if the current 
   \label{fig:m}
 \end{figure}
 
+The level that produced the results in figure \ref{fig:m} was a bit more challenging than the level that produced the results to figure \ref{fig:e}. Though the number of moves required to solve the level was only 9, compared to the 11 moves required to solve the other level, the number of boxes increased to two. This increases the complexity of the level greatly. After about 140 episode, the solver was able to identify the optimal action policy.  
+
 \begin{figure}[h] 
   \centering
      \includegraphics[width=\linewidth]{images/hard_graph.png}
   \caption{Results for solving an hard level.}
   \label{fig:h}
 \end{figure}
+
+The level that produced the results in figure \ref{fig:h} takes a minimum of 30 moves to solve and contained two boxes, making it the most complicated level that was tested. The solver was able to identify the optimal action policy after about 400 episodes. The results from this data provided the most insight into the solvers performance. The number of moves that the solver used began small, increasing until about episode 80, then decreasing until about episode 400. If the solvers goal is to minimize the number of moves, why was the number of moves increasing? Though the number of moves was increasing, the agent was not solving the level. instead, the agent was creating deadlocks and the episode was ending early. This allowed the agent to identify the actions that created deadlocks and increase the number of moves they were able to take. When all deadlocks were identified, after approximately 80 episodes, the agent could then refine the action policy and reduce the overall moves they needed to take.
+
 \SubSection{Rewards}
 
 \SubSection{Learning Rate and Discount Factor}
