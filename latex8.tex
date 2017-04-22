@@ -197,6 +197,34 @@ Where α is the Learning Rate of the agent, and γ is the Discount Factor of the
 %------------------------------------------------------------------------- 
 \SubSection{Rewards}
 
+Rewards are one of the major building blocks of Q-Learning.  If you recall, a reward is given to an agent once an action $a$ is perfomed on a state $s_t$.  Many Q-Learning algorithms implement a reward function which, depending on the outcome state $s_{t+1}$, will result in a numberical reward.  These rewards will fall into either one of two categories, negative or positive.  A positive reward should be given when a desirable outcome is acheived after action $a_t$ is performed at state $s_t$, resulting in an outcome state $s_{t+1}$.  The nature of the rewards implementation in the Q-Learning algorithm will cause the agent to perfer taking action $a$ at state $s_t$ again.  A negative reward should be given when a undesirable outcome is acheived after action $a$ is performed at state $s_t$, resulting in an outcome state $s_{t+1}$.  Converse to the effect that the positive reward will have, the negative reward will cause the agent to avoid taking action $a$ at state $s_t$ again.  The formula for this reward is generally written as a difference function between the intial state $s_t$ and outcome state $s_{t+1}$ as seen in equation \ref{eq:reward}.
+
+\begin{equation}
+reward \gets R_a(s_t, s_{t+1})
+\label{eq:reward}
+\end{equation}
+
+A full list of the finalized rewards in our soluction can be found in table \ref{table:rewards}.  We found that positive rewards should be given very rarely, and only in extremely desirable circumstances.  For instance, we gave the highest (positive) reward when a box was pushed onto a goal.  In the inital design of our solution, we gave the agent a reward of 0 for moving, because we saw no immediate negative or positive effects from this.  However, in our final implementation, we gave a negative reward to an agent for moving because this encouraged exploration and discouraged 'wondering'.  In the development of a successful Q-Learning algorithm for the Sokoban puzzle, we found that the adjustment of our rewards had a significant impact on the success rate of the solver.
+
+\begin{table}[htbp]
+\begin{tabular}{l l} \hline\hline
+Reward Value & Reward Type \\ \hline
++1.00 & Box pushed onto goal \\
+-0.01 & Box pushed \\
+-0.15 & Agent moved \\
+-0.15 & Box pushed against wall \\
+-0.15 & Box pushed against box \\
+-0.15 & Box pushed from one goal to another \\
+-0.20 & Box pushed off goal \\ 
+-1.00 & Agent moved into wall \\
+-1.00 & Agent moved into immovable box \\
+-1.00 & Agent created simple deadlock \\
+-1.00 & Agent created freeze deadlock \\ \hline\hline
+\end{tabular}
+\caption{Rewards awarded to the Sokoban agent during Q-Learning}
+\label{table:rewards}
+\end{table}
+
 %------------------------------------------------------------------------- 
 \SubSection{Algorithm}
 
@@ -306,27 +334,44 @@ One of the most critical aspects of the algorithm is identifying if the current 
 \Section{Conclusions}
 
 %------------------------------------------------------------------------- 
-\nocite{ex1,ex2}
 \bibliographystyle{latex8}
 \bibliography{latex8}
 
 \begin{thebibliography}{9}
-\bibitem{latexcompanion} 
-Michel Goossens, Frank Mittelbach, and Alexander Samarin. 
-\textit{The \LaTeX\ Companion}. 
-Addison-Wesley, Reading, Massachusetts, 1993.
- 
-\bibitem{einstein} 
-Albert Einstein. 
-\textit{Zur Elektrodynamik bewegter K{\"o}rper}. (German) 
-[\textit{On the electrodynamics of moving bodies}]. 
-Annalen der Physik, 322(10):891–921, 1905.
- 
-\bibitem{knuthwebsite} 
-Knuth: Computers and Typesetting,
-\\\texttt{http://www-cs-faculty.stanford.edu/\~{}uno/abcde.html}
+\bibitem{culberson} 
+J. Culberson. 
+\textit{Sokoban is PSPACE-complete}.
+1997.
+
+\bibitem{jarusek}
+P. Jarušek and R. Pelánek.
+Difficulty rating of sokoban puzzle
+in Proc. of the Fifth Starting AI Researchers' Symposium (STAIRS 2010).
+Dec, 2010. pp.~140-150
+
+\bibitem{russell}
+S. J. Russell and P. Norvig.
+\textit{Artificial intelligence: a modern approach}.
+Upper Saddle River: Prentice-Hall, 2010.
+
+\bibitem{littman} 
+M. L. Littman.
+Markov games as a framework for multi-agent
+reinforcement learning in Proceedings of the eleventh international
+conference on machine learning. Vol 157. pp 157-163. 1994
+
+\bibitem{guo} 
+M. Guo, Y. Liu and J. Malec
+\textit{A new Q-learning algorithm based on the metropolis criterion}.
+IEEE Transactions on Systems, Man, and Cybernetics, Part B (Cybernetics), vol.~34, no. 5, pp.~2140-2143, Oct. 2004.
+
+\bibitem{ming} 
+T. Ming.
+\textit{Multi-agent reinforcement learning: Independent vs.~cooperative agents.}.
+Proceedings of the tenth international conference on machine learning. 1993.
+
 \end{thebibliography}
 
-
 \end{document}
+
 
