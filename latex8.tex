@@ -13,6 +13,7 @@
 \usepackage{graphicx}
 \usepackage{algorithm}% http://ctan.org/pkg/algorithms
 \usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
+\usepackage{amsmath}
 
 %\documentstyle[times,art10,twocolumn,latex8]{article}
 %------------------------------------------------------------------------- 
@@ -66,7 +67,7 @@ The level shown in figure \ref{fig:b} is the simplest solvable sokoban level tha
 
 \begin{figure}[h] 
   \centering
-     \includegraphics[width=0.7\linewidth]{basic_unsolved_solved.png}
+     \includegraphics[width=0.7\linewidth]{images/basic_unsolved_solved.png}
   \caption{The simplest solvable sokoban level (left) and the solved state (right).}
   \label{fig:b}
 \end{figure}
@@ -92,7 +93,7 @@ If we consider the level in figure \ref{fig:sd}, where the simple deadlock squar
 
 \begin{figure}[h] 
   \centering
-     \includegraphics[width=0.5\linewidth]{simple_deadlock.png}
+     \includegraphics[width=0.5\linewidth]{images/simple_deadlock.png}
   \caption{The simple deadlock squares are identified in this level and marked.}
   \label{fig:sd}
 \end{figure}
@@ -129,14 +130,14 @@ The level in figure \ref{fig:f} demonstrates an example of a freeze state. Notic
 
 \begin{figure}[h] 
   \centering
-     \includegraphics[width=0.5\linewidth]{freeze_deadlock.png}
+     \includegraphics[width=0.5\linewidth]{images/freeze_deadlock.png}
   \caption{The configuration of boxes in this level creates a freeze deadlock.}
   \label{fig:f}
 \end{figure}
 
 \begin{figure}[h] 
   \centering
-     \includegraphics[width=0.5\linewidth]{freeze_deadlock_ok.png}
+     \includegraphics[width=0.5\linewidth]{images/freeze_deadlock_ok.png}
   \caption{Since the boxes in this level are frozen on top of the goals, no freeze deadlock is created.}
   \label{fig:fok}
 \end{figure}
@@ -183,7 +184,13 @@ Q-Learning is one of the more prominent reinforcement learning techniques. This 
 
 Q-Learning allows a single agent, aware of its current state, to develop a strategy through exploration. This is accomplished through consideration of past states and future reward for performing all possible actions on the current state. An agent is placed into its environment at an initial state $s$ and begins by taking some arbitrary action $a$. Once this action is taken, the Q-value for the given state (s), after taking that action (a), is updated. The agent is said to have learned from this action (a), and will use this learned reward in the future if it encounters this state (s) again. The Q-value for taking an action (a) at a state (s) is defined as \cite{ex1}:
 
-$$Q(s_t, a_t) \gets Q(s_t, a_t) + \alpha \cdot [R_a(s_t, s_{t+1}) + \gamma \cdot max_aQ(s_{t+1}, a) - Q(s_t, a_t)]$$
+\begin{equation}
+\begin{split}
+Q(s_t, a_t) \gets &Q(s_t, a_t) \\
+                  &+ \alpha \cdot [R_a(s_t, s_{t+1}) \\
+                  &+ \gamma \cdot max_aQ(s_{t+1}, a) - Q(s_t, a_t)]
+\end{split}
+\end{equation}
 
 Where α is the Learning Rate of the agent, and γ is the Discount Factor of the agent.
 
@@ -220,7 +227,7 @@ One of the most critical aspects of the algorithm is identifying if the current 
         \State $resultState\gets \textnormal{TakeAction(state, action)}$
         \State $\textnormal{update Q value}$
       \EndWhile
-      \Return Q
+      \State \Return Q
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
@@ -229,13 +236,13 @@ One of the most critical aspects of the algorithm is identifying if the current 
   \caption{Returns the maximum q value reachable from a state in a single action}
   \begin{algorithmic}[4]
     \Function {MaximizeQ}{state, Q}
-      \State $max\gets \textnormal{negative infinity}$
+      \State $max\gets -\infty$
       \For {action = up, right, down, left}
-        \If {Q(state, action) > max}
-          \State $max\gets \textnormal{Q(state, action)}$
+        \If {$Q(state, action) > max$}
+          \State $max\gets Q(state, action)$
         \EndIf
       \EndFor
-      \Return max
+      \State \Return $max$
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
@@ -244,17 +251,17 @@ One of the most critical aspects of the algorithm is identifying if the current 
   \caption{Returns the action which will acheive the maximum q value reachable from a state}
   \begin{algorithmic}[5]
     \Function {MaximizeAction}{state, Q}
-      \State $max\gets \textnormal{negative infinity}$
-      \State $max actions\gets \textnormal{empty set}$
+      \State $max\gets -\infty$
+      \State $actions\gets \textnormal{empty set}$
       \For {action = up, right, down, left}
-        \If {Q(state, action) > max}
+        \If {$Q(state, action) > max$}
           \State $max\gets \textnormal{Q(state, action)}$
-          \State $max actions\gets \textnormal{set with action}$
+          \State $actions\gets \textnormal{set with action}$
         \Else
-          \State $max actions\gets \textnormal{max actions + action}$
+          \State $actions\gets actions + action$
         \EndIf
       \EndFor
-      \Return random action from max actions
+      \State \Return random action from $actions$
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
@@ -263,7 +270,7 @@ One of the most critical aspects of the algorithm is identifying if the current 
   \caption{Returns the resulting state after an action is taken on an intial state}
   \begin{algorithmic}[6]
     \Function {MaximizeQ}{state, action}
-      \Return outcome of state after action is taken
+      \State \Return state after action is taken
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
@@ -271,6 +278,26 @@ One of the most critical aspects of the algorithm is identifying if the current 
 %------------------------------------------------------------------------- 
 \Section{Experimental Analysis}
 
+\begin{figure}[h] 
+  \centering
+     \includegraphics[width=\linewidth]{images/easy_graph.png}
+  \caption{Results for solving an easy level.}
+  \label{fig:e}
+\end{figure}
+
+\begin{figure}[h] 
+  \centering
+     \includegraphics[width=\linewidth]{images/medium_graph.png}
+  \caption{Results for solving an medium level.}
+  \label{fig:m}
+\end{figure}
+
+\begin{figure}[h] 
+  \centering
+     \includegraphics[width=\linewidth]{images/hard_graph.png}
+  \caption{Results for solving an hard level.}
+  \label{fig:h}
+\end{figure}
 \SubSection{Rewards}
 
 \SubSection{Learning Rate and Discount Factor}
@@ -282,6 +309,24 @@ One of the most critical aspects of the algorithm is identifying if the current 
 \nocite{ex1,ex2}
 \bibliographystyle{latex8}
 \bibliography{latex8}
+
+\begin{thebibliography}{9}
+\bibitem{latexcompanion} 
+Michel Goossens, Frank Mittelbach, and Alexander Samarin. 
+\textit{The \LaTeX\ Companion}. 
+Addison-Wesley, Reading, Massachusetts, 1993.
+ 
+\bibitem{einstein} 
+Albert Einstein. 
+\textit{Zur Elektrodynamik bewegter K{\"o}rper}. (German) 
+[\textit{On the electrodynamics of moving bodies}]. 
+Annalen der Physik, 322(10):891–921, 1905.
+ 
+\bibitem{knuthwebsite} 
+Knuth: Computers and Typesetting,
+\\\texttt{http://www-cs-faculty.stanford.edu/\~{}uno/abcde.html}
+\end{thebibliography}
+
 
 \end{document}
 
