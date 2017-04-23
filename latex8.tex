@@ -208,22 +208,23 @@ reward \gets R_a(s_t, s_{t+1})
 A full list of the finalized rewards in our soluction can be found in table \ref{table:rewards}.  We found that positive rewards should be given very rarely, and only in extremely desirable circumstances.  For instance, we gave the highest (positive) reward when a box was pushed onto a goal.  In the inital design of our solution, we gave the agent a reward of 0 for moving, because we saw no immediate negative or positive effects from this.  However, in our final implementation, we gave a negative reward to an agent for moving because this encouraged exploration and discouraged 'wondering'.  In the development of a successful Q-Learning algorithm for the Sokoban puzzle, we found that the adjustment of our rewards had a significant impact on the success rate of the solver.
 
 \begin{table}[htbp]
-\begin{tabular}{l l} \hline\hline
-Reward Value & Reward Type \\ \hline
-+1.00 & Box pushed onto goal \\
--0.01 & Box pushed \\
--0.15 & Agent moved \\
--0.15 & Box pushed against wall \\
--0.15 & Box pushed against box \\
--0.15 & Box pushed from one goal to another \\
--0.20 & Box pushed off goal \\ 
--1.00 & Agent moved into wall \\
--1.00 & Agent moved into immovable box \\
--1.00 & Agent created simple deadlock \\
--1.00 & Agent created freeze deadlock \\ \hline\hline
-\end{tabular}
-\caption{Rewards awarded to the Sokoban agent during Q-Learning}
-\label{table:rewards}
+  \centering
+  \begin{tabular}{l c} \hline\hline
+    Transition & Reward \\ \hline
+    Box pushed onto goal & $+1.00$ \\
+    Box pushed & $-0.01$ \\
+    Agent moved & $-0.15$ \\
+    Box pushed against wall & $-0.15$ \\
+    Box pushed against box & $-0.15$ \\
+    Box pushed from one goal to another & $-0.15$ \\
+    Box pushed off goal & $-0.20$ \\ 
+    Agent moved into wall & $-1.00$ \\
+    Agent moved into immovable box & $-1.00$ \\
+    Agent created simple deadlock & $-1.00$ \\
+    Agent created freeze deadlock & $-1.00$ \\ \hline\hline
+  \end{tabular}
+  \caption{Immediate rewards for transitioning a Sokoban level.}
+  \label{table:rewards}
 \end{table}
 
 %------------------------------------------------------------------------- 
@@ -308,6 +309,18 @@ One of the most critical aspects of the algorithm is identifying if the current 
 \Section{Experimental Analysis}
 
 In order to evaluate the performance of our solver, we selected three levels with various difficulty. The levels were classified into three groups, easy, medium, and hard. These difficulties are based on the minimum number of moves required to solve the puzzle, and the number of boxes in the puzzle. In order to understand the exact capabilities of the solver, the following parameters were measured after each episode: the number of moves the agent takes, the average reward the agent received, whether or not the agent was able to solve the puzzle, and the time it took for the agent to complete the episode. 
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{l c c c} \hline\hline
+    Difficulty & Boxes & Moves & Episodes \\ \hline
+    Easy & 1 & 11 & 70 \\
+    Medium & 2 & 9 & 140 \\
+    Hard & 2 & 30 & 400 \\ \hline\hline
+  \end{tabular}
+  \caption{Results from solving 3 different puzzles.}
+  \label{table:results}
+\end{table}
 
 \begin{figure}[h] 
   \centering
