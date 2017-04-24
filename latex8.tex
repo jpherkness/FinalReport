@@ -416,6 +416,15 @@ The level that produced the results in figure \ref{fig:m} was a bit more challen
 
 The level that produced the results in figure \ref{fig:h} takes a minimum of 30 moves to solve and contained two boxes, making it the most complicated level that was tested. The solver was able to identify the optimal action policy after about 400 episodes. The results from this data provided the most insight into the solvers performance. The number of moves that the solver used began small, increasing until about episode 80, then decreasing until about episode 400. If the solvers goal is to minimize the number of moves, why was the number of moves increasing? Though the number of moves was increasing, the agent was not solving the level. instead, the agent was creating deadlocks and the episode was ending early. This allowed the agent to identify the actions that created deadlocks and increase the number of moves they were able to take. When all deadlocks were identified, after approximately 80 episodes, the agent could then refine the action policy and reduce the overall moves they needed to take.
 
+%--- Future Works ----------------------------------------------------------------
+\Section{Future Works}
+
+In future implementations of this experiment, it will be fundemental that different combinations of learning rate and discount factor are tested, analysing the correlation it has on the solver.  Within the experiment that was conducted, we selected the learning rate and discount factor based on the immediate correlation that was seen with the success rate of the solver; by no means, however, are these values ($learning rate \gets 0.20$, $discount factor \gets 0.80$) the most optimal.  Moreover, an experiment using a dynamic learning rate and discount factor should be performed, determining if it has any correlation with the success rate or speed of the solver.  We theorize that if we begin with a higher learning rate and, throughout the learning process, gradually diminish the rate, it would have a strong effect on the success rate of the solver, modeling that of a human and our learning process.
+
+Also, we would like to experiment with different types of reward functions.  In the experiment that was conducted, static rewars were assigned to each type of scenario that could occur durring the puzzle.  We would like to apply a reward function for certain scenarios that is dependent on the overall progress towards success on the state.  For example, when the agent pushes a box onto a goal, the reward that is received would be dependent on how many goals are already covered, as apposed to a static value of $+1.00$.  We beleive that it is worth testing if this stratagy has any effect on the success and speed of the solver.
+
+It would also be worth testing various graph search algorithms used to solve Sokoban puzzles, such as A* and A* Iterative Deepening, in order to compare and contrast the effectiveness of these algorithms to that of Q-Learning.
+
 %--- Conclusions ----------------------------------------------------------------
 \Section{Conclusions}
 
