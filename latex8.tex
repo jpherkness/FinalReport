@@ -1,12 +1,13 @@
 
 %
-%  $Description: Author guidelines and sample document in LaTeX 2.09$ 
+%  $Title: Solving Sokoban$
+%  $Description: Describing a solution to solving Sokoban puzzles using Q-Learning$ 
 %
-%  $Author: ienne $
-%  $Date: 1995/09/15 15:20:59 $
-%  $Revision: 1.4 $
+%  $Author: Joseph Herkness and Joshua Herkness$
+%  $Date: 2017/04/24$
 %
 
+%--- Packages -------------------------------------------------------------------
 \documentclass[times, 10pt,twocolumn]{article} 
 \usepackage{latex8}
 \usepackage{times}
@@ -17,17 +18,16 @@
 \usepackage{amsmath}
 \usepackage{url}
 
-%\documentstyle[times,art10,twocolumn,latex8]{article}
-%------------------------------------------------------------------------- 
-% take the % away on next line to produce the final camera-ready version 
+
 \pagestyle{empty}
 
-%------------------------------------------------------------------------- 
+%--- Document -------------------------------------------------------------------
 \begin{document}
 
 \title{Solving Sokoban}
 
-\author{Joseph Herkness\\
+\author{
+Joseph Herkness\\
 Oakland University\\
 jpherkness@oakland.edu\\
 \and
@@ -43,16 +43,15 @@ jrherkness@oakland.edu\\
    This paper describes a Q-Learning based algorithm used to determine the solution to a sokoban puzzle. The nature of Sokoban, as a finite decision problem, means that a Reinforcement Learning approach can be used to identify the problems optimal policy. Q-Learning is a Reinforcement Learning technique that constructs the optimal policy through recording the utility of executing an action on a given state. 
 \end{abstract}
 
-% Keywords
 \providecommand{\keywords}[1]{\textbf{\textit{Keywords---}} #1}
 \keywords{Sokoban, Solver, Q-Learning, Reinforcement Learning, Machine Learning, Reward, Algorithm}
 
-%------------------------------------------------------------------------- 
+%--- Introduction ---------------------------------------------------------------
 \Section{Introduction}
 
 Q-Learning is a form of model-free reinforcement learning that provides agents with the capability to develop a strategy for solving an instance of a problem. Model-free learning differs from model-based learning in that it does not require a pre constructed model of the problem in order to derive a solution. Instead, Q-Learning derives the solution through exploring the problem space, much like many dynamic programming concepts. In this paper, a Q-Learning algorithm, that identifies the solution to a Sokoban puzzle, will be explained. A Sokoban puzzle is a grid based logic puzzle where a player pushes boxes around a warehouse, the ultimate goal being to position these boxes on top of every goal. The typical Q-Learning approach will be improved upon through an analysis of potential traps in each state, as well as adjustments to the learning rate and discount factor through dynamic modification as episodes progress. 
 
-%------------------------------------------------------------------------ 
+%--- Sokoban --------------------------------------------------------------------
 \Section{Sokoban}
 
 Sokoban is two dimensional puzzle game. Each Sokoban level consists of a rectangular grid representing a warehouse. The warehouse consists of squares which can contain four types of objects: walls, boxes, goals, and the player. If a square does not contain any of these objects, it is considered empty. Each object is restricted to the two dimensional grid of the warehouse. In order to solve the puzzle, the player must push each box such that it covers one of the goals. When every goal has been covered by a box, the puzzle is considered solved. A valid Sokoban level, such as the one depicted in figure \ref{fig:b}, must contain a number of boxes equal to the number of goals. Each action that the player takes has the potential of placing the level in a deadlock. If a deadlock is created, the level is no longer solvable, and the player has lost.
@@ -66,17 +65,17 @@ Sokoban is two dimensional puzzle game. Each Sokoban level consists of a rectang
 
 The level depicted in figure \ref{fig:b} is the simplest solvable sokoban level that can be created. The solution to the puzzle is to simply move the player to the right one square. This action pushes the box onto the goal. Since there is only one box, and the box is covering a goal, the level is considered solved.
 
-%------------------------------------------------------------------------- 
+%--------------------------------------------------------------------------------
 \SubSection{Rules}
 
 The rules of the game are rather simple. During each turn, the player has the ability to move in one of four directions: up, down, left, or right. A square is considered empty if it does not contain a wall or box. If the square corresponding to the direction moved contains a box, and the next square is considered empty, the box is pushed into that square. The player is allowed to move into any empty square. When every goal has been covered by a box, the puzzle is considered solved, and the game ends.
 
-%------------------------------------------------------------------------- 
+%--------------------------------------------------------------------------------
 \SubSection{Deadlocks}
 
 Another important aspect of Sokoban is the existance of deadlocks. A deadlock is a configuration of objects that results in an unsolvable level [1]. A state is considered deadlocked if it contains at least one deadlock. Any action that the player takes has the potential of placing the level in a deadlocked state. If such a state is encountered, any attempt to solve the level should no longer be pursued, even if there are still valid actions that can be applied to the deadlocked state. While there are numerous types of deadlocks, two that are necessary for complete deadlock detection are simple deadlocks and freeze deadlocks. Implementation of the detection of these two deadlock types results in the ability to detect whether or not a action creates a deadlocked state. 
 
-%------------------------------------------------------------------------- 
+%--------------------------------------------------------------------------------
 \SubSection{Simple Deadlocks}
 
 Simple deadlocks are squares in the level that create a deadlock whenever a box is pushed into them. Pushing a block into a simple deadlock square creates a deadlock because the box in that square can no longer be pushed to a goal. These simple deadlock squares are independent of the positions of the boxes in the level, and do not change. This means that simple deadlock squares can be identified when the initial level is loaded. 
@@ -115,7 +114,7 @@ The result of performing such an algorithm is the identification of all simple d
   \end{algorithmic}
 \end{algorithm}
 
-%------------------------------------------------------------------------- 
+%--------------------------------------------------------------------------------
 \SubSection{Freeze Deadlocks}
 
 Freeze deadlocks are configurations of boxes and walls that result in a deadlocked state. Unlike the simple deadlock squares, freeze deadlocks depend on the position of boxes in the level. This means that we must check for a freeze deadlock anytime a box is moved in the level. 
@@ -165,22 +164,22 @@ The algorithm for detecting freeze deadlocks is rather intuitive, since we only 
   \end{algorithmic}
 \end{algorithm}
 
-%------------------------------------------------------------------------- 
+%--------------------------------------------------------------------------------
 \SubSection{Motivation}
 
 The problem of solving a sokoban puzzle is often compared to the real world problem of programming an autonomous robot to work in a warehouse. Such a robot would be required to navigate the warehouse, as well as perform its designated tasks, using only the information in its immediate vicinity. If such a robot’s task were to move crates into a storage location, then the two problems would be synonymous. In this case, a similar solution could be used to solve both problems. If Q-Learning proves to be a valid solution to the sokoban problem, it’s application to real world problems could prove to be limitless.
 
 If, however, there was more than a single agent acting within the environment, the basic Q-Learning approach will fail. For example, imagine a situation where multiple autonomous robots are each moving boxes within a warehouse from location to location. If a basic Q-Learning approach was implemented, these robots would begin to interfere with one another. To fix this, the robots would need some way to communicate learned information to and from one another [7].
 
-%------------------------------------------------------------------------- 
+%--------------------------------------------------------------------------------
 \SubSection{Notation}
 
-%------------------------------------------------------------------------- 
+%--- Related Work ---------------------------------------------------------------
 \Section{Related Work}
 
 Sokoban has been proven to be a PSPACE-Complete problem [1]. Other approaches to this problem include BFS, DFS, and solvers employing heuristic functions such as A* search.
 
-%------------------------------------------------------------------------- 
+%--- Q-Learning -----------------------------------------------------------------
 \Section{Q-Learning}
 
 Q-Learning is a form of model-free reinforcement learning \cite{Watkins1992}. This techniques can be used to find the optimal action policy for any given markov decision process. A markov dicision process is a mathematical framework used to model decision making problems where the decision are under the agent's control. In Q-Learning, an agent experiences the following sequence of actions until the optimal action policy is identified. At any given state $s_t$ the agent can perform an action $a$. The result of taking action $a_t$ is the new state $s_{t+1}$. The agent recieved a immediate reward of $R_a(s_t, s_{t+1})$ for taking action $a$. Using this reward, the agent adjusts its $Q(s, a)$ values using the following equation. \cite{Watkins1992}
@@ -206,7 +205,7 @@ In equation \ref{eq:q}, the learning rate is described using $\alpha \in (0, 1)$
 
 Q-Learning allows a single agent, aware of its current state, to develop a strategy through exploration. This is accomplished through consideration of past states and future reward for performing all possible actions on the current state. An agent is placed into its environment at an initial state $s$ and begins by taking some arbitrary action $a$. Once this action is taken, the Q-value for the given state $s$, after taking that action $a$, is updated. The agent is said to have learned from this action $a$, and will use this learned reward in the future if it encounters this state $s$ again. 
 
-%------------------------------------------------------------------------- 
+%--------------------------------------------------------------------------------
 \SubSection{Rewards}
 
 Rewards are one of the major building blocks of Q-Learning.  If you recall, a reward is given to an agent once an action $a_t$ is perfomed on a state $s_t$.  Many Q-Learning algorithms implement a reward function which, depending on the outcome state $s_{t+1}$, will result in a numberical reward.  These rewards will fall into either one of two categories, negative or positive.  A positive reward should be given when a desirable outcome is acheived after action $a_t$ is performed at state $s_t$, resulting in an outcome state $s_{t+1}$.  The nature of the rewards implementation in the Q-Learning algorithm will cause the agent to perfer taking action $a_t$ at state $s_t$ again.  A negative reward should be given when a undesirable outcome is acheived after action $a_t$ is performed at state $s_t$, resulting in an outcome state $s_{t+1}$.  Converse to the effect that the positive reward will have, the negative reward will cause the agent to avoid taking action $a_t$ at state $s_t$ again.  The formula for this reward is generally written as a difference function between the intial state $s_t$ and outcome state $s_{t+1}$ as seen in equation \ref{eq:reward}.
@@ -238,7 +237,7 @@ A list of the most recent rewardsss given to our Sokoban agent for transitioning
   \label{table:rewards}
 \end{table}
 
-%------------------------------------------------------------------------- 
+%--------------------------------------------------------------------------------
 \SubSection{Algorithm}
 
 Algorithm \ref{alg:q_learning} represents the entry point for the Sokoban solver.  An initial state $s_0$ and desired episodes $e$ will be used to run an iterative learning process on the state.  An episode represents one iteration of learning from intial state to terminal state.  A larger number of episodes run during Q-Learning will result in a more optimal solution.  Also, though unimplemented in our solver, when the Q values converge, meaning they stop changing between episodes, hte optimal solution has been found.
@@ -325,7 +324,7 @@ Algorithm \ref{alg:take_action} is used to perform action $a_t$ on state $s_t$ w
   \label{alg:take_action}
 \end{algorithm}
 
-%------------------------------------------------------------------------- 
+%--- Experimental Analysis ------------------------------------------------------
 \Section{Experimental Analysis}
 
 In order to evaluate the performance of our solver, we selected three levels with various difficulty. The levels were classified into three groups, easy, medium, and hard. These difficulties are based on the minimum number of moves required to solve the puzzle, and the number of boxes in the puzzle. In order to understand the exact capabilities of the solver, the following parameters were measured after each episode: the number of moves the agent takes, the average reward the agent received, whether or not the agent was able to solve the puzzle, and the time it took for the agent to complete the episode. 
@@ -369,12 +368,11 @@ The level that produced the results in figure \ref{fig:m} was a bit more challen
 
 The level that produced the results in figure \ref{fig:h} takes a minimum of 30 moves to solve and contained two boxes, making it the most complicated level that was tested. The solver was able to identify the optimal action policy after about 400 episodes. The results from this data provided the most insight into the solvers performance. The number of moves that the solver used began small, increasing until about episode 80, then decreasing until about episode 400. If the solvers goal is to minimize the number of moves, why was the number of moves increasing? Though the number of moves was increasing, the agent was not solving the level. instead, the agent was creating deadlocks and the episode was ending early. This allowed the agent to identify the actions that created deadlocks and increase the number of moves they were able to take. When all deadlocks were identified, after approximately 80 episodes, the agent could then refine the action policy and reduce the overall moves they needed to take.
 
-\SubSection{Rewards}
-
-%------------------------------------------------------------------------ 
+%--- Conclusions ----------------------------------------------------------------
 \Section{Conclusions}
 
-%------------------------------------------------------------------------- 
+
+%--- Bibliography ---------------------------------------------------------------
 \bibliographystyle{latex8}
 \bibliography{latex8}
 

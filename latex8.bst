@@ -1101,7 +1101,7 @@ FUNCTION {begin.bib}
     { preamble$ write$ newline$ }
   if$
   "\begin{thebibliography}{"  longest.label  * 
-  "}\setlength{\itemsep}{-1ex}\small" * write$ newline$
+  "}\normalsize" * write$ newline$
 }
 
 EXECUTE {begin.bib}
