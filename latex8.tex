@@ -8,12 +8,6 @@
 %
 
 % TODO
-% Abstract
-% - How we implemented q learning. 
-% - Why do they care?
-% Introduction
-% - Remove end sentences
-% - Add a bit more detail
 % Sokoban
 % - Citations
 % Motivation
@@ -58,7 +52,7 @@ jrherkness@oakland.edu\\
 \thispagestyle{empty}
 
 \begin{abstract}
-   
+Though the rules of Sokoban are rather simple, identifying the optimal action policy is not, even for computers. The high branching factor and precence of potential deadlocks greatly increase the complexity of the problem. While most graph search algorithms prove to provide a decent method of identifying the optimal action policy to a Sokoban problem, they rely on prior knowledge of the model, such as the positions of the goals. Unlike graph search algorithms, Q-Learning identifies the optimal action policy through exploring the problem space and recording the reward of actions taken. This method of reinforcement learning proves to be an interesiting area of study, especially if the agent can learn without previous knowledge of the model.
 \end{abstract}
 
 \providecommand{\keywords}[1]{\textbf{\textit{Keywords---}} #1}
@@ -67,7 +61,7 @@ jrherkness@oakland.edu\\
 %--- Introduction ---------------------------------------------------------------
 \Section{Introduction}
 
-The game of Sokoban is an interesting topic of study in the field of Artificial Intellegence. Although the rules are rather simple, the problem proves to posess a high level of complexity, even for humans. Due to the fact that the problem is PSPACE-complete, even simple levels require a high level of computation. This is due to the high branching factor, and the potential existance of deadlocks. While there have been numerous attempts, by researchers, to create a Sokoban solver capable of solving any Sokoban problem, the complexity is far too high, and most solvers are only able to solve a fraction of the problems. In this paper, we present an implementation of a Q-Learning based Sokoban solver.
+The game of Sokoban is an interesting topic of study in the field of Artificial Intellegence. Although the rules are rather simple, the problem proves to posess a high level of complexity, even for computers. Due to the fact that the problem is PSPACE-complete \cite{Pspace-complete97sokobanis}, even simple levels require a high level of computation. This is due to the high branching factor, and the potential existance of deadlocks. While there have been numerous attempts, by researchers, to create a Sokoban solver capable of solving any Sokoban problem, the complexity is far too high, and most solvers are only able to solve a fraction of the problems. In this paper, we present an implementation of a Q-Learning based Sokoban solver.
 
 Q-Learning is a form of model-free reinforcement learning that provides an agent with the capability to develop an optimal strategy for solving an instance of a problem. Model-free learning differs from model-based learning in that it does not require a pre constructed model of the problem in order to derive a solution. Instead, Q-Learning derives the solution through exploring the problem space, and recieving rewards at each step along the way. In this sense, Q-Learning is rather similar to many dynamic programming concepts.
 
@@ -436,46 +430,6 @@ It would also be worth testing various graph search algorithms used to solve Sok
 %--- Bibliography ---------------------------------------------------------------
 \bibliographystyle{latex8}
 \bibliography{latex8}
-
-\begin{thebibliography}{9}
-\bibitem{wiki}
-Sokoban wiki.
-\url{http://www.sokobano.de/wiki}.
-
-
-\bibitem{culberson} 
-J. Culberson. 
-\textit{Sokoban is PSPACE-complete}.
-1997.
-
-\bibitem{jarusek}
-P. Jarušek and R. Pelánek.
-Difficulty rating of sokoban puzzle
-in Proc. of the Fifth Starting AI Researchers' Symposium (STAIRS 2010).
-Dec, 2010. pp.~140-150
-
-\bibitem{russell}
-S. J. Russell and P. Norvig.
-\textit{Artificial intelligence: a modern approach}.
-Upper Saddle River: Prentice-Hall, 2010.
-
-\bibitem{littman} 
-M. L. Littman.
-Markov games as a framework for multi-agent
-reinforcement learning in Proceedings of the eleventh international
-conference on machine learning. Vol 157. pp 157-163. 1994
-
-\bibitem{guo} 
-M. Guo, Y. Liu and J. Malec
-\textit{A new Q-learning algorithm based on the metropolis criterion}.
-IEEE Transactions on Systems, Man, and Cybernetics, Part B (Cybernetics), vol.~34, no. 5, pp.~2140-2143, Oct. 2004.
-
-\bibitem{ming} 
-T. Ming.
-\textit{Multi-agent reinforcement learning: Independent vs.~cooperative agents.}.
-Proceedings of the tenth international conference on machine learning. 1993.
-
-\end{thebibliography}
 
 \end{document}
 
