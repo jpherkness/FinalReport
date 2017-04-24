@@ -183,9 +183,10 @@ Sokoban has been proven to be a PSPACE-Complete problem [1]. Other approaches to
 %------------------------------------------------------------------------- 
 \Section{Q-Learning}
 
-Q-Learning is a form of model-free reinforcement learning \cite{Watkins1992}. This techniques can be used to find the optimal action policy for any given markov decision process. A markov dicision process is a mathematical framework used to model decision making problems where the decision are under the agent's control. At any given state $s_t$ the agent can perform an action $a$. The result of taking action $a_t$ is the new state $s_{t+1}$. The agent recieved a immediate reward of $R_a(s_t, s_{t+1})$ for taking action $a$. Using this reward, the afent adjusts its $Q(s_t, a_t)$ values using the following equation. \cite{Watkins1992}.
+Q-Learning is a form of model-free reinforcement learning \cite{Watkins1992}. This techniques can be used to find the optimal action policy for any given markov decision process. A markov dicision process is a mathematical framework used to model decision making problems where the decision are under the agent's control. In Q-Learning, an agent experiences the following sequence of actions until the optimal action policy is identified. At any given state $s_t$ the agent can perform an action $a$. The result of taking action $a_t$ is the new state $s_{t+1}$. The agent recieved a immediate reward of $R_a(s_t, s_{t+1})$ for taking action $a$. Using this reward, the agent adjusts its $Q(s, a)$ values using the following equation. \cite{Watkins1992}
 
 \begin{equation}
+\label{eq:q}
 \begin{split}
 Q(s_t, a_t) \gets &Q(s_t, a_t) \\
                   &+ \alpha \cdot [R_a(s_t, s_{t+1}) \\
@@ -193,9 +194,17 @@ Q(s_t, a_t) \gets &Q(s_t, a_t) \\
 \end{split}
 \end{equation}
 
-The agent’s goal is to develop a strategy for solving the problem that results in the greatest reward. Q-Learning allows a single agent, aware of its current state, to develop a strategy through exploration. This is accomplished through consideration of past states and future reward for performing all possible actions on the current state. An agent is placed into its environment at an initial state $s$ and begins by taking some arbitrary action $a$. Once this action is taken, the Q-value for the given state $s$, after taking that action $a$, is updated. The agent is said to have learned from this action (a), and will use this learned reward in the future if it encounters this state $s$ again. The Q-value for taking an action $a$ at a state $s$ is defined as:
+where 
 
-Where α is the Learning Rate of the agent, and γ is the Discount Factor of the agent.
+\begin{equation}
+max_aQ(s_{t+1}, a)
+\end{equation}
+
+is the maximum $Q(s, a)$ value that the agent can achieve from state $s_{t+1}$. This is determined by maximizing the $Q(s_{t+1}, a)$ value for every possible action that can be performed on state $s_{t+1}$. In the case of Sokoban, this means maximizing on the actions: up, down, left, and right. This results in the agents ability to select actions that will produce the greatest reward. In a sense, the agent is maximizing the reward that they recieve. 
+
+In equation \ref{eq:q}, the learning rate is described using $\alpha \in (0, 1)$, and the discount factor is described using $\gamma \in (0, 1)$. The lewarning rate represents the rate at which the agent updates the $Q(s, a)$ values. When the learning rate is 0, the values will never change, meaning the agent will not learn anything. When the learning rate is 1, the agent will consider only the most recent information \cite{Littman94markovgames}. The discount factor controls the effect of future rewards in the decision making of the agent \cite{Littman94markovgames}. A discount factor of 0 will cause the agent to place emphasis on current rewards, and a discount factor of 1 will cause the agent to pace emphasis on future rewards \cite{Littman94markovgames}. Our implementation utilzed a learning rate of 0.1 and a discount factor of 0.9. It is worth mentioning that the optimal learning rate and discount factor were not used in our implementation.
+
+Q-Learning allows a single agent, aware of its current state, to develop a strategy through exploration. This is accomplished through consideration of past states and future reward for performing all possible actions on the current state. An agent is placed into its environment at an initial state $s$ and begins by taking some arbitrary action $a$. Once this action is taken, the Q-value for the given state $s$, after taking that action $a$, is updated. The agent is said to have learned from this action $a$, and will use this learned reward in the future if it encounters this state $s$ again. 
 
 %------------------------------------------------------------------------- 
 \SubSection{Rewards}
@@ -361,8 +370,6 @@ The level that produced the results in figure \ref{fig:m} was a bit more challen
 The level that produced the results in figure \ref{fig:h} takes a minimum of 30 moves to solve and contained two boxes, making it the most complicated level that was tested. The solver was able to identify the optimal action policy after about 400 episodes. The results from this data provided the most insight into the solvers performance. The number of moves that the solver used began small, increasing until about episode 80, then decreasing until about episode 400. If the solvers goal is to minimize the number of moves, why was the number of moves increasing? Though the number of moves was increasing, the agent was not solving the level. instead, the agent was creating deadlocks and the episode was ending early. This allowed the agent to identify the actions that created deadlocks and increase the number of moves they were able to take. When all deadlocks were identified, after approximately 80 episodes, the agent could then refine the action policy and reduce the overall moves they needed to take.
 
 \SubSection{Rewards}
-
-\SubSection{Learning Rate and Discount Factor}
 
 %------------------------------------------------------------------------ 
 \Section{Conclusions}
