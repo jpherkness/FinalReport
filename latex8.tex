@@ -169,10 +169,28 @@ The algorithm for detecting freeze deadlocks is rather intuitive, since we only 
 
 The problem of solving a sokoban puzzle is often compared to the real world problem of programming an autonomous robot to work in a warehouse. Such a robot would be required to navigate the warehouse, as well as perform its designated tasks, using only the information in its immediate vicinity. If such a robot’s task were to move crates into a storage location, then the two problems would be synonymous. In this case, a similar solution could be used to solve both problems. If Q-Learning proves to be a valid solution to the sokoban problem, it’s application to real world problems could prove to be limitless.
 
-If, however, there was more than a single agent acting within the environment, the basic Q-Learning approach will fail. For example, imagine a situation where multiple autonomous robots are each moving boxes within a warehouse from location to location. If a basic Q-Learning approach was implemented, these robots would begin to interfere with one another. To fix this, the robots would need some way to communicate learned information to and from one another [7].
+If, however, there was more than a single agent acting within the environment, the basic Q-Learning approach will fail. For example, imagine a situation where multiple autonomous robots are each moving boxes within a warehouse from location to location. If a basic Q-Learning approach was implemented, these robots would begin to interfere with one another. To fix this, the robots would need some way to communicate learned information to and from one another.
 
 %--------------------------------------------------------------------------------
 \SubSection{Notation}
+
+The state of a sokoban level can be encoded using a two dimensional arragement of characters. Since there are really only eight possible permutations of objects in a Sokoban level, only eight characters are needed to completly encode the state. The characters shown in table \ref{table:notation} are commonly used among the Sokoban community to represent a sokoban level.
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{l c} \hline\hline
+    Square & Character \\ \hline
+    Wall & \# \\
+    Player & @ \\
+    Player on goal & + \\
+    Box & \$ \\
+    Box on goal & * \\
+    Goal & . \\
+    Floor & Space \\ \hline\hline
+  \end{tabular}
+  \caption{The notion used to represent the state of a sokoban level.}
+  \label{table:notation}
+\end{table}
 
 %--- Related Work ---------------------------------------------------------------
 \Section{Related Work}
