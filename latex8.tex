@@ -35,7 +35,7 @@
 \usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
 \usepackage{amsmath}
 \usepackage{url}
-
+\usepackage{varwidth}
 
 \pagestyle{empty}
 
@@ -116,7 +116,7 @@ The result of performing such an algorithm is the identification of all simple d
 \begin{algorithmic}[1]
   \Function {IdentifySimpleDeadlocks}{}
     \State $stack\gets \textnormal{goals}$
-    \State $visited\gets \textnormal{empty set}$
+    \State $visited\gets \emptyset$
     \While { stack not empty }
       \State $position\gets stack.pop()$
       \State visited.add(position)
@@ -158,8 +158,8 @@ The algorithm for detecting freeze deadlocks is rather intuitive, since we only 
 \begin{algorithm}
   \caption{Identifying freeze deadlocks}
 \begin{algorithmic}[1]
-  \State $frozen \gets \textnormal{empty set}$
-  \State $visited \gets \textnormal{empty set}$
+  \State $frozen \gets \emptyset$
+  \State $visited \gets \emptyset$
   \Function {Frozen}{position}
     \State $\textnormal{add position to visited}$
     \If { wall on left or right }
@@ -277,14 +277,15 @@ In the development of a successful Q-Learning algorithm, we found the adjustment
 \SubSection{Implementation}
 
 Algorithm \ref{alg:q_learning} represents the entry point for the Sokoban solver.  An initial state $s_0$ and desired episodes will be used to run an iterative learning process on the state.  An episode represents one iteration of learning from intial state to terminal state.  A larger number of episodes run during Q-Learning will result in a more optimal solution.
+
 \begin{algorithm}
   \caption{Solver for Sokoban using Q-learning}
   \begin{algorithmic}[1]
     \Function {QLearning}{state, episodes}
-      \State $Q\gets \textnormal{empty set}$
+      \State $Q\gets \emptyset$
       \State $episode\gets 0$
       \While {$episode\not=episodes$}
-        \State $Q\gets \textnormal{RunEpisode(Q)}$
+        \State $Q\gets \Call{RunEpisode}{Q}$
         \State $episode\gets episode + 1$
       \EndWhile
       \State \Return Q
@@ -296,14 +297,21 @@ Algorithm \ref{alg:q_learning} represents the entry point for the Sokoban solver
 Algorithm \ref{alg:run_episode} [3][6] is where the majority of the Q-Learning is completed, and is used to determine the optimal strategy for solving a given Sokoban puzzle.  We run an episode of Q-Learning on an initial state with persistant Q values.  While state $s_t$ is not terminal, we pick an action which will maximize the Q value that can be reach, since this is by definition the highest rewarded action that the agent can take at $s_t$.  Once we take action $a_t$, we calculate the outcome state $s_{t+1}$ and update the Q value for $s_t$ taking action $a_t$.  This update of the Q value is effectivly causing the agent to learn based on the action that is taken.
 
 \begin{algorithm}
-  \caption{Runs a single episode of q learning}
+  \caption{Runs a single episode of Q-learning}
   \begin{algorithmic}[1]
     \Function {RunEpisode}{state, Q}
       \State $state\gets \textnormal{initial state}$
+      \State $\alpha \gets 0.1$ \Comment{Learning Rate}
+      \State $\gamma \gets 0.9$ \Comment{Discount Factor}
       \While {not Terminal?(state)}
-        \State $action\gets \textnormal{MaximizeAction(state, Q)}$
-        \State $resultState\gets \textnormal{TakeAction(state, action)}$
-        \State $\textnormal{update Q value}$
+        \State $action\gets \Call{MaximizeAction}{state, Q}$
+        \State $resultState\gets \Call{TakeAction}{state, action}$
+        \State $maxQ\gets \Call{MaximizeQ}{state, Q}$
+        \State \begin{varwidth}[t]{\linewidth}
+          $Q(state, action) \gets Q(state, action) +$\par
+          \hskip\algorithmicindent $\alpha \cdot [R(state, resultState) +$\par
+          \hskip\algorithmicindent $\gamma \cdot maxQ - Q(state, action)]$
+        \end{varwidth}
       \EndWhile
       \State \Return Q
     \EndFunction
@@ -311,14 +319,14 @@ Algorithm \ref{alg:run_episode} [3][6] is where the majority of the Q-Learning i
   \label{alg:run_episode}
 \end{algorithm}
 
-Algorithm \ref{alg:maximize_q} is used to calculate the maximum Q value that can be reached in a single action $a_t$ from state $s_t$.  A simple iteration over the actions possible at that state will yeild the maximum Q value that is reachable.  Similarly, Algorithm \ref{alg:maximize_action} is used to find the action which will yeild the maximum Q value.  If many action will result in an equal Q value, we randomly pick one.  In the sokoban puzzle, these two algorithms are the maim logic for the agent to use its learned knowlege to perform actions reulting in the highest possible reward.  Since the sokoban agent can take only one of four possible actions - up, down, left, and right - they must look at each of these and make an informed decision to which will produce the highest reward.  If many of these actions will result in the same value, the agent will randomly select one of them.
+Algorithm \ref{alg:maximize_q} is used to calculate the maximum Q value that can be reached in a single action $a_t$ from state $s_t$.  A simple iteration over the actions possible at that state will yeild the maximum Q value.  Similarly, Algorithm \ref{alg:maximize_action} is used to find the action which will yeild the maximum Q value.  If many action will result in an equal Q value, we randomly pick one.  In the sokoban puzzle, these two algorithms are the maim logic for the agent to use its learned knowlege to perform actions reulting in the highest possible reward.  Since the sokoban agent can take only one of four possible actions - up, down, left, and right - they must look at each of these and make an informed decision to which will produce the highest reward.  If there are more than one action that produces the hightest value, the agent will select a random action from that set.
 
 \begin{algorithm}
-  \caption{Returns the maximum q value reachable from a state in a single action}
+  \caption{Returns the maximum Q value reachable from a state in a single action}
   \begin{algorithmic}[4]
     \Function {MaximizeQ}{state, Q}
       \State $max\gets -\infty$
-      \For {action = up, right, down, left}
+      \For {$ action \in \left\{ {up, down, left, right}\right\}$}
         \If {$Q(state, action) > max$}
           \State $max\gets Q(state, action)$
         \EndIf
@@ -334,13 +342,13 @@ Algorithm \ref{alg:maximize_q} is used to calculate the maximum Q value that can
   \begin{algorithmic}[1]
     \Function {MaximizeAction}{state, Q}
       \State $max\gets -\infty$
-      \State $actions\gets \textnormal{empty set}$
-      \For {action = up, right, down, left}
+      \State $actions\gets \emptyset$
+      \For {$ action \in \left\{ {up, down, left, right}\right\}$}
         \If {$Q(state, action) > max$}
-          \State $max\gets \textnormal{Q(state, action)}$
-          \State $actions\gets \textnormal{set with action}$
+          \State $max\gets Q(state, action)$
+          \State $actions\gets \left\{ {action}\right\}$
         \Else
-          \State $actions\gets actions + action$
+          \State $actions \gets actions \cup \left\{ {action}\right\}$
         \EndIf
       \EndFor
       \State \Return random action from $actions$
