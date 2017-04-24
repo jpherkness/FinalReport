@@ -58,7 +58,7 @@ jrherkness@oakland.edu\\
 \thispagestyle{empty}
 
 \begin{abstract}
-   This paper describes a Q-Learning based algorithm used to determine the solution to a sokoban puzzle. The nature of Sokoban, as a finite decision problem, means that a Reinforcement Learning approach can be used to identify the problems optimal policy. Q-Learning is a Reinforcement Learning technique that constructs the optimal policy through recording the utility of executing an action on a given state. 
+   
 \end{abstract}
 
 \providecommand{\keywords}[1]{\textbf{\textit{Keywords---}} #1}
@@ -67,7 +67,9 @@ jrherkness@oakland.edu\\
 %--- Introduction ---------------------------------------------------------------
 \Section{Introduction}
 
-Q-Learning is a form of model-free reinforcement learning that provides agents with the capability to develop an optimal strategy for solving an instance of a problem. Model-free learning differs from model-based learning in that it does not require a pre constructed model of the problem in order to derive a solution. Instead, Q-Learning derives the solution through exploring the problem space, much like many dynamic programming concepts. In this paper, a Q-Learning algorithm, that identifies the solution to a Sokoban puzzle, will be explained. A Sokoban puzzle is a grid based logic puzzle where a player pushes boxes around a warehouse, the ultimate goal being to position these boxes on top of every goal. The typical Q-Learning approach will be improved upon through an analysis of potential traps in each state, as well as adjustments to the learning rate and discount factor through dynamic modification as episodes progress. 
+The game of Sokoban is an interesting topic of study in the field of Artificial Intellegence. Although the rules are rather simple, the problem proves to posess a high level of complexity, even for humans. Due to the fact that the problem is PSPACE-complete, even simple levels require a high level of computation. This is due to the high branching factor, and the potential existance of deadlocks. While there have been numerous attempts, by researchers, to create a Sokoban solver capable of solving any Sokoban problem, the complexity is far too high, and most solvers are only able to solve a fraction of the problems. In this paper, we present an implementation of a Q-Learning based Sokoban solver.
+
+Q-Learning is a form of model-free reinforcement learning that provides an agent with the capability to develop an optimal strategy for solving an instance of a problem. Model-free learning differs from model-based learning in that it does not require a pre constructed model of the problem in order to derive a solution. Instead, Q-Learning derives the solution through exploring the problem space, and recieving rewards at each step along the way. In this sense, Q-Learning is rather similar to many dynamic programming concepts.
 
 %--- Sokoban --------------------------------------------------------------------
 \Section{Sokoban}
@@ -77,7 +79,7 @@ Sokoban is two dimensional puzzle game. Each Sokoban level consists of a rectang
 \begin{figure}[h] 
   \centering
      \includegraphics[width=0.7\linewidth]{images/basic_unsolved_solved.png}
-  \caption{The simplest solvable sokoban level (left) and the solution (right).}
+  \caption{Simplest solvable Sokoban level.}
   \label{fig:b}
 \end{figure}
 
@@ -86,10 +88,10 @@ The level depicted in figure \ref{fig:b} is the simplest solvable sokoban level 
 %--------------------------------------------------------------------------------
 \SubSection{Rules}
 
-The rules of the game are rather simple. During each turn, the player has the ability to move in one of four directions: up, down, left, or right. A square is considered empty if it does not contain a wall or box. If the square corresponding to the direction moved contains a box, and the next square is considered empty, the box is pushed into that square. The player is allowed to move into any empty square. When every goal has been covered by a box, the puzzle is considered solved, and the game ends.
+The rules of the game are rather simple. During each turn, the player has the ability to move in one of four directions: up, down, left, or right. A square is considered empty if it does not contain a wall or box. If the square corresponding to the direction moved contains a box, and the next square is considered empty, the box is pushed into that square. This means the plater can conly push one box at a time. The player is allowed to move into any empty square. When every goal has been covered by a box, the puzzle is considered solved, and the game ends. Any box can be pushed onto any gaol. 
 
 %--------------------------------------------------------------------------------
-\SubSection{Deadlocks}
+\SubSection{Deadlock Detection}
 
 Another important aspect of Sokoban is the existance of deadlocks. A deadlock is a configuration of objects that results in an unsolvable level [1]. A state is considered deadlocked if it contains at least one deadlock. Any action that the player takes has the potential of placing the level in a deadlocked state. If such a state is encountered, any attempt to solve the level should no longer be pursued, even if there are still valid actions that can be applied to the deadlocked state. While there are numerous types of deadlocks, two that are necessary for complete deadlock detection are simple deadlocks and freeze deadlocks. Implementation of the detection of these two deadlock types results in the ability to detect whether or not a action creates a deadlocked state. 
 
@@ -105,7 +107,7 @@ If we consider the level in figure \ref{fig:sd}, where the simple deadlock squar
 \begin{figure}[h] 
   \centering
      \includegraphics[width=0.5\linewidth]{images/simple_deadlock.png}
-  \caption{The simple deadlock squares are identified in this level and marked.}
+  \caption{Simple Deadlocks.}
   \label{fig:sd}
 \end{figure}
 
@@ -142,14 +144,14 @@ The level in figure \ref{fig:f} demonstrates an example of a freeze state. Notic
 \begin{figure}[h] 
   \centering
      \includegraphics[width=0.5\linewidth]{images/freeze_deadlock.png}
-  \caption{The configuration of boxes in this level creates a freeze deadlock.}
+  \caption{Freeze Deadlock.}
   \label{fig:f}
 \end{figure}
 
 \begin{figure}[h] 
   \centering
      \includegraphics[width=0.5\linewidth]{images/freeze_deadlock_ok.png}
-  \caption{Since the boxes in this level are frozen on top of the goals, no freeze deadlock is created.}
+  \caption{Freeze Deadlock Exception.}
   \label{fig:fok}
 \end{figure}
 
@@ -417,6 +419,10 @@ The level that produced the results in figure \ref{fig:h} takes a minimum of 30 
 %--- Conclusions ----------------------------------------------------------------
 \Section{Conclusions}
 
+%--- Appendix ----------------------------------------------------------------
+\appendix
+\listoffigures
+\listoftables
 
 %--- Bibliography ---------------------------------------------------------------
 \bibliographystyle{latex8}
