@@ -10,10 +10,12 @@
 \documentclass[times, 10pt,twocolumn]{article} 
 \usepackage{latex8}
 \usepackage{times}
+\usepackage[font=normalsize, labelfont=bf]{caption}
 \usepackage{graphicx}
 \usepackage{algorithm}% http://ctan.org/pkg/algorithms
 \usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
 \usepackage{amsmath}
+\usepackage{url}
 
 %\documentstyle[times,art10,twocolumn,latex8]{article}
 %------------------------------------------------------------------------- 
@@ -23,7 +25,7 @@
 %------------------------------------------------------------------------- 
 \begin{document}
 
-\title{Solving Sokoban Using Q-Learning}
+\title{Solving Sokoban}
 
 \author{Joseph Herkness\\
 Oakland University\\
@@ -50,45 +52,36 @@ jrherkness@oakland.edu\\
 
 Q-Learning is a form of model-free reinforcement learning that provides agents with the capability to develop a strategy for solving an instance of a problem. Model-free learning differs from model-based learning in that it does not require a pre constructed model of the problem in order to derive a solution. Instead, Q-Learning derives the solution through exploring the problem space, much like many dynamic programming concepts. In this paper, a Q-Learning algorithm, that identifies the solution to a Sokoban puzzle, will be explained. A Sokoban puzzle is a grid based logic puzzle where a player pushes boxes around a warehouse, the ultimate goal being to position these boxes on top of every goal. The typical Q-Learning approach will be improved upon through an analysis of potential traps in each state, as well as adjustments to the learning rate and discount factor through dynamic modification as episodes progress. 
 
-%------------------------------------------------------------------------- 
-\SubSection{Motivation}
-
-Sokoban has been proven to be a PSPACE-Complete problem [1]. Other approaches to this problem include BFS, DFS, and solvers employing heuristic functions such as A* search.
-
-The problem of solving a sokoban puzzle is often compared to the real world problem of programming an autonomous robot to work in a warehouse. Such a robot would be required to navigate the warehouse, as well as perform its designated tasks, using only the information in its immediate vicinity. If such a robot’s task were to move crates into a storage location, then the two problems would be synonymous. In this case, a similar solution could be used to solve both problems. If Q-Learning proves to be a valid solution to the sokoban problem, it’s application to real world problems could prove to be limitless.
-
-If, however, there was more than a single agent acting within the environment, the basic Q-Learning approach will fail. For example, imagine a situation where multiple autonomous robots are each moving boxes within a warehouse from location to location. If a basic Q-Learning approach was implemented, these robots would begin to interfere with one another. To fix this, the robots would need some way to communicate learned information to and from one another [7].
-
 %------------------------------------------------------------------------ 
 \Section{Sokoban}
 
-Sokoban is two dimensional puzzle game. Each Sokoban level consists of a rectangular grid representing a warehouse. The warehouse contains many different entities, such as boxes, goals, walls, and the player themselves. Each entity is restricted to the two dimensional grid of the warehouse. In order to solve the puzzle, the player must push each box such that it covers one of the goals. When every goal has been covered by a box, the puzzle is considered solved. A valid Sokoban puzzle must contain a number of boxes equal to the number of goals. Each action that the player takes has the potential of placing the level in a deadlock. If a deadlock is created, the level is no longer solvable, and the player has lost.
-
-The level shown in figure \ref{fig:b} is the simplest solvable sokoban level that can be made. The state on the right is the initial state, and the state on the left is the final state. The solution to the puzzle is to simply move to the right one space. This action pushes the box onto the goal, solving the level.
+Sokoban is two dimensional puzzle game. Each Sokoban level consists of a rectangular grid representing a warehouse. The warehouse consists of squares which can contain four types of objects: walls, boxes, goals, and the player. If a square does not contain any of these objects, it is considered empty. Each object is restricted to the two dimensional grid of the warehouse. In order to solve the puzzle, the player must push each box such that it covers one of the goals. When every goal has been covered by a box, the puzzle is considered solved. A valid Sokoban level, such as the one depicted in figure \ref{fig:b}, must contain a number of boxes equal to the number of goals. Each action that the player takes has the potential of placing the level in a deadlock. If a deadlock is created, the level is no longer solvable, and the player has lost.
 
 \begin{figure}[h] 
   \centering
      \includegraphics[width=0.7\linewidth]{images/basic_unsolved_solved.png}
-  \caption{The simplest solvable sokoban level (left) and the solved state (right).}
+  \caption{The simplest solvable sokoban level (left) and the solution (right).}
   \label{fig:b}
 \end{figure}
+
+The level depicted in figure \ref{fig:b} is the simplest solvable sokoban level that can be created. The solution to the puzzle is to simply move the player to the right one square. This action pushes the box onto the goal. Since there is only one box, and the box is covering a goal, the level is considered solved.
 
 %------------------------------------------------------------------------- 
 \SubSection{Rules}
 
-During each turn, the player has the ability to move in one of four directions - up, down, left, or right. A square is considered empty if it does not contain a wall or box. If the square corresponding to the direction moved contains a box, and the next square is considered empty, the box is pushed into that square. The player is allowed to move into any empty square. When every goal has been covered by a box, the puzzle is considered solved, and the game ends.
+The rules of the game are rather simple. During each turn, the player has the ability to move in one of four directions: up, down, left, or right. A square is considered empty if it does not contain a wall or box. If the square corresponding to the direction moved contains a box, and the next square is considered empty, the box is pushed into that square. The player is allowed to move into any empty square. When every goal has been covered by a box, the puzzle is considered solved, and the game ends.
 
 %------------------------------------------------------------------------- 
 \SubSection{Deadlocks}
 
-A deadlock is a configuration of boxes that results in an unsolvable level [1]. A state is considered deadlocked if it contains at least one deadlock. Any action that the player takes has the potential of placing the level in a deadlocked state. If such a state is encountered, any attempt to solve the level should no longer be pursued, even if there are still valid actions that can be applied to the deadlocked state. While there are numerous types of deadlocks, two that are necessary for complete deadlock detection are simple deadlocks and freeze deadlocks. Implementation of the detection of these two deadlock types results in the ability to detect whether or not a action creates a deadlocked state. 
+Another important aspect of Sokoban is the existance of deadlocks. A deadlock is a configuration of objects that results in an unsolvable level [1]. A state is considered deadlocked if it contains at least one deadlock. Any action that the player takes has the potential of placing the level in a deadlocked state. If such a state is encountered, any attempt to solve the level should no longer be pursued, even if there are still valid actions that can be applied to the deadlocked state. While there are numerous types of deadlocks, two that are necessary for complete deadlock detection are simple deadlocks and freeze deadlocks. Implementation of the detection of these two deadlock types results in the ability to detect whether or not a action creates a deadlocked state. 
 
 %------------------------------------------------------------------------- 
 \SubSection{Simple Deadlocks}
 
 Simple deadlocks are squares in the level that create a deadlock whenever a box is pushed into them. Pushing a block into a simple deadlock square creates a deadlock because the box in that square can no longer be pushed to a goal. These simple deadlock squares are independent of the positions of the boxes in the level, and do not change. This means that simple deadlock squares can be identified when the initial level is loaded. 
 
-The algorithm for identifying simple deadlock squares is rather intuitive. By definition, if a box cannot be pushed from a square to one of the goals, the square is considered to be a simple deadlock square. Likewise, if a box cannot be pulled from one of the goals to that square, it means the same thing. This mean that all valid squares can be identified by removing all boxes from the level, placing a box on each goal square, pulling the box away in all directions, and marking all reachable squares as visited. Every square that is not marked as visited is a simple deadlock square. 
+The algorithm for identifying simple deadlock squares is rather intuitive. By definition, if a box cannot be pushed from a square to one of the goals, the square is considered to be a simple deadlock square. Likewise, if a box cannot be pulled from one of the goals to that square, it means the same thing. This mean that all valid squares can be identified by removing all boxes from the level, placing a box on each goal square, pulling the box away in all directions, and marking all reachable squares as visited. Every square that is not marked as visited is a simple deadlock square. \cite{Wiki}
 
 If we consider the level in figure \ref{fig:sd}, where the simple deadlock squares are crossed off, the algorithm becomes a little more clear. First we remove all boxes from the level. We then place an imaginary box on the goal and pull it in each direction. Since we cannot pull the box up, the space directly above the goal is a simple deadlock space. Since we cannot pull the box down, the square directly below the goal is a simple deadlock square. However, since we can pull the box to the left, the square directly to the left of the goal is considered a valid square. This square is then marked as visited, and we repeat the algorithm on this new square. 
 
@@ -143,7 +136,7 @@ The level in figure \ref{fig:f} demonstrates an example of a freeze state. Notic
   \label{fig:fok}
 \end{figure}
 
-The algorithm for detecting freeze deadlocks is rather intuitive, since we only need to check whether a box can be pushed. Since a freeze deadlock is created after pushing a block, it is only neccessary to check if the pushed box is frozen, and possibly the boxes around the pushed box. The following algorithm will identify whether or not pushing a box into a position will create a freeze deadlock.
+The algorithm for detecting freeze deadlocks is rather intuitive, since we only need to check whether a box can be pushed. Since a freeze deadlock is created after pushing a block, it is only neccessary to check if the pushed box is frozen, and possibly the boxes around the pushed box. The following algorithm will identify whether or not pushing a box into a position will create a freeze deadlock. \cite{Wiki}
 
 \begin{algorithm}
   \caption{Identifying freeze deadlocks}
@@ -173,17 +166,24 @@ The algorithm for detecting freeze deadlocks is rather intuitive, since we only 
 \end{algorithm}
 
 %------------------------------------------------------------------------- 
+\SubSection{Motivation}
+
+The problem of solving a sokoban puzzle is often compared to the real world problem of programming an autonomous robot to work in a warehouse. Such a robot would be required to navigate the warehouse, as well as perform its designated tasks, using only the information in its immediate vicinity. If such a robot’s task were to move crates into a storage location, then the two problems would be synonymous. In this case, a similar solution could be used to solve both problems. If Q-Learning proves to be a valid solution to the sokoban problem, it’s application to real world problems could prove to be limitless.
+
+If, however, there was more than a single agent acting within the environment, the basic Q-Learning approach will fail. For example, imagine a situation where multiple autonomous robots are each moving boxes within a warehouse from location to location. If a basic Q-Learning approach was implemented, these robots would begin to interfere with one another. To fix this, the robots would need some way to communicate learned information to and from one another [7].
+
+%------------------------------------------------------------------------- 
 \SubSection{Notation}
 
 %------------------------------------------------------------------------- 
 \Section{Related Work}
 
+Sokoban has been proven to be a PSPACE-Complete problem [1]. Other approaches to this problem include BFS, DFS, and solvers employing heuristic functions such as A* search.
+
 %------------------------------------------------------------------------- 
 \Section{Q-Learning}
 
-Q-Learning is one of the more prominent reinforcement learning techniques. This techniques can be used to find the optimal actions that should be taken for any given markov decision process. A markov dicision process is a mathematical framework used to model decision making problems where the decision are under the agent's control. At any given state $s$ the agent can perform an action $a$. The result of taking action $a$ is the new state $s\prime$. The agent is then awarded a reward of $R_a(s, s\prime)$ for taking action $a$. The agent’s goal is to develop a strategy for solving the problem that results in the highest reward.
-
-Q-Learning allows a single agent, aware of its current state, to develop a strategy through exploration. This is accomplished through consideration of past states and future reward for performing all possible actions on the current state. An agent is placed into its environment at an initial state $s$ and begins by taking some arbitrary action $a$. Once this action is taken, the Q-value for the given state (s), after taking that action (a), is updated. The agent is said to have learned from this action (a), and will use this learned reward in the future if it encounters this state (s) again. The Q-value for taking an action (a) at a state (s) is defined as \cite{ex1}:
+Q-Learning is a form of model-free reinforcement learning \cite{Watkins1992}. This techniques can be used to find the optimal action policy for any given markov decision process. A markov dicision process is a mathematical framework used to model decision making problems where the decision are under the agent's control. At any given state $s_t$ the agent can perform an action $a$. The result of taking action $a_t$ is the new state $s_{t+1}$. The agent recieved a immediate reward of $R_a(s_t, s_{t+1})$ for taking action $a$. Using this reward, the afent adjusts its $Q(s_t, a_t)$ values using the following equation. \cite{Watkins1992}.
 
 \begin{equation}
 \begin{split}
@@ -192,6 +192,8 @@ Q(s_t, a_t) \gets &Q(s_t, a_t) \\
                   &+ \gamma \cdot max_aQ(s_{t+1}, a) - Q(s_t, a_t)]
 \end{split}
 \end{equation}
+
+The agent’s goal is to develop a strategy for solving the problem that results in the greatest reward. Q-Learning allows a single agent, aware of its current state, to develop a strategy through exploration. This is accomplished through consideration of past states and future reward for performing all possible actions on the current state. An agent is placed into its environment at an initial state $s$ and begins by taking some arbitrary action $a$. Once this action is taken, the Q-value for the given state $s$, after taking that action $a$, is updated. The agent is said to have learned from this action (a), and will use this learned reward in the future if it encounters this state $s$ again. The Q-value for taking an action $a$ at a state $s$ is defined as:
 
 Where α is the Learning Rate of the agent, and γ is the Discount Factor of the agent.
 
@@ -361,6 +363,11 @@ The level that produced the results in figure \ref{fig:h} takes a minimum of 30 
 \bibliography{latex8}
 
 \begin{thebibliography}{9}
+\bibitem{wiki}
+Sokoban wiki.
+\url{http://www.sokobano.de/wiki}.
+
+
 \bibitem{culberson} 
 J. Culberson. 
 \textit{Sokoban is PSPACE-complete}.
