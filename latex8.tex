@@ -291,7 +291,7 @@ Algorithm \ref{alg:q_learning} represents the entry point for the Sokoban solver
 \label{alg:q_learning}
 \end{algorithm}
 
-Algorithm \ref{alg:run_episode} [3][6] is where the majority of the Q-Learning is completed, and is used to determine the optimal strategy for solving a given Sokoban puzzle.  We run an episode of Q-Learning on an initial state with persistant Q values.  While state $s_t$ is not terminal, we pick an action which will maximize the Q value that can be reach, since this is by definition the highest rewarded action that the agent can take at $s_t$.  Once we take action $a_t$, we calculate the outcome state $s_{t+1}$ and update the Q value for $s_t$ taking action $a_t$.  This update of the Q value is effectivly causing the agent to learn based on the action that is taken.
+Algorithm \ref{alg:run_episode} \cite{Russell}\cite{Guo} is where the majority of the Q-Learning is completed, and is used to determine the optimal strategy for solving a given Sokoban puzzle.  We run an episode of Q-Learning on an initial state with persistant Q values.  While state $s_t$ is not terminal, we pick an action which will maximize the Q value that can be reach, since this is by definition the highest rewarded action that the agent can take at $s_t$.  Once we take action $a_t$, we calculate the outcome state $s_{t+1}$ and update the Q value for $s_t$ taking action $a_t$.  This update of the Q value is effectivly causing the agent to learn based on the action that is taken.
 
 \begin{algorithm}
   \caption{Runs a single episode of Q-learning}
