@@ -56,7 +56,7 @@ jrherkness@oakland.edu\\
 \thispagestyle{empty}
 
 \begin{abstract}
-Though the rules of Sokoban are rather simple, identifying the optimal action policy is not, even for computers. The high branching factor and precence of potential deadlocks greatly increase the complexity of the problem. While most graph search algorithms prove to provide a decent method of identifying the optimal action policy to a Sokoban problem, they identify the optimal action policy by exhaustively searching the problem space for a solution. Unlike graph search algorithms, Q-Learning identifies the optimal action policy through exploring the problem space and recording the reward of actions taken. This method of reinforcement learning proves to be an interesiting area of study.
+Though the rules of Sokoban are rather simple, identifying the optimal action policy is not, even for computers. The high branching factor and presence of potential deadlocks greatly increase the complexity of the problem. While most graph search algorithms prove to provide a decent method of identifying the optimal action policy to a Sokoban problem, they identify the optimal action policy by exhaustively searching the problem space for a solution. Unlike graph search algorithms, Q-Learning identifies the optimal action policy through exploring the problem space and recording the reward of actions taken. This method of reinforcement learning proves to be an interesting area of study.
 \end{abstract}
 
 \providecommand{\keywords}[1]{\textbf{\textit{Keywords---}} #1}
@@ -65,9 +65,9 @@ Though the rules of Sokoban are rather simple, identifying the optimal action po
 %--- Introduction ---------------------------------------------------------------
 \Section{Introduction}
 
-The game of Sokoban is an interesting topic of study in the field of Artificial Intellegence. Although the rules are rather simple, the problem proves to posess a high level of complexity, even for computers. Due to the fact that the problem is PSPACE-complete \cite{Pspace-complete97sokobanis}, even simple levels require a high level of computation. This is due to the high branching factor, and the potential existance of deadlocks. While there have been numerous attempts, by researchers, to create a Sokoban solver capable of solving any Sokoban problem, the complexity is far too high, and most solvers are only able to solve a fraction of the problems. In this paper, we present an implementation of a Q-Learning based Sokoban solver.
+The game of Sokoban is an interesting topic of study in the field of Artificial Intelligence. Although the rules are rather simple, the problem proves to possess a high level of complexity, even for computers. Due to the fact that the problem is PSPACE-complete \cite{Pspace-complete97sokobanis}, even simple levels require a high level of computation. This is due to the high branching factor, and the potential existence of deadlocks. While there have been numerous attempts, by researchers, to create a Sokoban solver capable of solving any Sokoban problem, the complexity is far too high, and most solvers are only able to solve a fraction of the problems. In this paper, we present an implementation of a Q-Learning based Sokoban solver.
 
-Q-Learning is a form of model-free reinforcement learning that provides an agent with the capability to develop an optimal strategy for solving an instance of a problem. Model-free learning differs from model-based learning in that it does not require a pre constructed model of the problem in order to derive a solution. Instead, Q-Learning derives the solution through exploring the problem space, and recieving rewards at each step along the way. In this sense, Q-Learning is rather similar to many dynamic programming concepts.
+Q-Learning is a form of model-free reinforcement learning that provides an agent with the capability to develop an optimal strategy for solving an instance of a problem. Model-free learning differs from model-based learning in that it does not require a pre constructed model of the problem in order to derive a solution. Instead, Q-Learning derives the solution through exploring the problem space, and receiving rewards at each step along the way. In this sense, Q-Learning is rather similar to many dynamic programming concepts.
 
 %--- Sokoban --------------------------------------------------------------------
 \Section{Sokoban}
@@ -86,12 +86,12 @@ The level depicted in figure \ref{fig:b} is the simplest solvable sokoban level 
 %--------------------------------------------------------------------------------
 \SubSection{Rules}
 
-The rules of the game are rather simple. During each turn, the player has the ability to move in one of four directions: up, down, left, or right. A square is considered empty if it does not contain a wall or box. If the square corresponding to the direction moved contains a box, and the next square is considered empty, the box is pushed into that square. This means the plater can conly push one box at a time. The player is allowed to move into any empty square. When every goal has been covered by a box, the puzzle is considered solved, and the game ends. Any box can be pushed onto any gaol. 
+The rules of the game are rather simple. During each turn, the player has the ability to move in one of four directions: up, down, left, or right. A square is considered empty if it does not contain a wall or box. If the square corresponding to the direction moved contains a box, and the next square is considered empty, the box is pushed into that square. This means the player can only push one box at a time. The player is allowed to move into any empty square. When every goal has been covered by a box, the puzzle is considered solved, and the game ends. Any box can be pushed onto any goal.  
 
 %--------------------------------------------------------------------------------
 \SubSection{Deadlock Detection}
 
-Another important aspect of Sokoban is the existance of deadlocks. A deadlock is a configuration of objects that results in an unsolvable level [1]. A state is considered deadlocked if it contains at least one deadlock. Any action that the player takes has the potential of placing the level in a deadlocked state. If such a state is encountered, any attempt to solve the level should no longer be pursued, even if there are still valid actions that can be applied to the deadlocked state. While there are numerous types of deadlocks, two that are necessary for complete deadlock detection are simple deadlocks and freeze deadlocks. Implementation of the detection of these two deadlock types results in the ability to detect whether or not a action creates a deadlocked state. 
+Another important aspect of Sokoban is the existence of deadlocks. A deadlock is a configuration of objects that results in an unsolvable level [1]. A state is considered deadlocked if it contains at least one deadlock. Any action that the player takes has the potential of placing the level in a deadlocked state. If such a state is encountered, any attempt to solve the level should no longer be pursued, even if there are still valid actions that can be applied to the deadlocked state. While there are numerous types of deadlocks, two that are necessary for complete deadlock detection are simple deadlocks and freeze deadlocks. Implementation of the detection of these two deadlock types results in the ability to detect whether or not a action creates a deadlocked state. 
 
 %--------------------------------------------------------------------------------
 \SubSection{Simple Deadlocks}
@@ -153,7 +153,7 @@ The level in figure \ref{fig:f} demonstrates an example of a freeze state. Notic
   \label{fig:fok}
 \end{figure}
 
-The algorithm for detecting freeze deadlocks is rather intuitive, since we only need to check whether a box can be pushed. Since a freeze deadlock is created after pushing a block, it is only neccessary to check if the pushed box is frozen, and possibly the boxes around the pushed box. The following algorithm will identify whether or not pushing a box into a position will create a freeze deadlock. \cite{Wiki}
+The algorithm for detecting freeze deadlocks is rather intuitive, since we only need to check whether a box can be pushed. Since a freeze deadlock is created after pushing a block, it is only necessary to check if the pushed box is frozen, and possibly the boxes around the pushed box. The following algorithm will identify whether or not pushing a box into a position will create a freeze deadlock. \cite{Wiki}
 
 \begin{algorithm}
   \caption{Identifying freeze deadlocks}
@@ -186,14 +186,14 @@ The algorithm for detecting freeze deadlocks is rather intuitive, since we only 
 \SubSection{Motivation}
 
 
-Thought the research conducted withing this paper outline and prove the application of Q-Learning as a solution to the Sokoban puzzle, it is also a case study into the possiblity of using Q-Learning in problems relating to Sokoban, such as programming an autonomous robot to work in a warehouse. Such a robot would be required to navigate the warehouse, as well as perform its designated tasks, using only the information in its immediate vicinity.  It would be limited in the actions it can perform, and possibly in the knowledge it has of it's environment. If such a robot’s task were to move crates into a storage location, then the two problems would be synonymous. In this case, a similar solution could be used to solve both problems. The data from our experiments are a proof that Q-Learning can be used to solve problems similar to Sokoban, and thus, has applications in the field of automation.  However, as the puzzles in Sokoban increase in difficulty, the time it takes to utilize our approach and find the oprimal solutions increases as well.  So, although Q-Learning has applications in this field, it is unlikely that it will become the sole method of solving problems of this nature.
+Thought the research conducted within this paper outline and prove the application of Q-Learning as a solution to the Sokoban puzzle, it is also a case study into the possibility of using Q-Learning in problems relating to Sokoban, such as programming an autonomous robot to work in a warehouse. Such a robot would be required to navigate the warehouse, as well as perform its designated tasks, using only the information in its immediate vicinity.  It would be limited in the actions it can perform, and possibly in the knowledge it has of its environment. If such a robot’s task were to move crates into a storage location, then the two problems would be synonymous. In this case, a similar solution could be used to solve both problems. The data from our experiments are a proof that Q-Learning can be used to solve problems similar to Sokoban, and thus, has applications in the field of automation.  However, as the puzzles in Sokoban increase in difficulty, the time it takes to utilize our approach and find the optimal solutions increases as well.  So, although Q-Learning has applications in this field, it is unlikely that it will become the sole method of solving problems of this nature.
 
 Another instance where the basic implementation of Q-Learning will fail is if there were more than a single agent acting within the environment. For example, imagine a situation where multiple autonomous robots are each moving boxes within a warehouse from location to location. If a basic Q-Learning approach were implemented, each robot would greatly increase the number of different states possible in the environment, and begin to interfere with one another.  In order to overcome this obstacle, a modification would need to be implemented such that the agent would be encouraged to communicate with one another.
 
 %--------------------------------------------------------------------------------
 \SubSection{Notation}
 
-The state of a sokoban level can be encoded using a two dimensional arragement of characters. Since there are really only eight possible permutations of objects in a Sokoban level, only eight characters are needed to completly encode the state. The characters shown in table \ref{table:notation} are commonly used among the Sokoban community to represent a sokoban level.
+The state of a sokoban level can be encoded using a two dimensional arrangement of characters. Since there are really only eight possible permutations of objects in a Sokoban level, only eight characters are needed to completely encode the state. The characters shown in table \ref{table:notation} are commonly used among the Sokoban community to represent a sokoban level.
 
 \begin{table}[htbp]
   \centering
@@ -207,7 +207,7 @@ The state of a sokoban level can be encoded using a two dimensional arragement o
     Goal & . \\
     Floor & Space \\ \hline\hline
   \end{tabular}
-  \caption{The notion used to represent the state of a sokoban level.}
+  \caption{The notation used to represent the state of a sokoban level.}
   \label{table:notation}
 \end{table}
 
@@ -219,7 +219,7 @@ Previous implementations of solvers utilized graph search algorithms, such as Br
 %--- Q-Learning -----------------------------------------------------------------
 \Section{Q-Learning}
 
-Q-Learning is a form of model-free reinforcement learning \cite{Watkins1992}. This techniques can be used to find the optimal action policy for any given markov decision process. A markov dicision process is a mathematical framework used to model decision making problems where the decisions are under the agent's control. In Q-Learning, an agent experiences the following sequence of actions until the optimal action policy is identified. At any given state $s_t$ the agent can perform an action $a$. The result of taking action $a_t$ is the new state $s_{t+1}$. The agent recieved a immediate reward of $R_a(s_t, s_{t+1})$ for taking action $a_t$. Using this reward, the agent adjusts its $Q(s, a)$ values using the following equation \cite{Watkins1992}:
+Q-Learning is a form of model-free reinforcement learning \cite{Watkins1992}. This techniques can be used to find the optimal action policy for any given markov decision process. A markov decision process is a mathematical framework used to model decision making problems where the decisions are under the agent's control. In Q-Learning, an agent experiences the following sequence of actions until the optimal action policy is identified. At any given state $s_t$ the agent can perform an action $a$. The result of taking action $a_t$ is the new state $s_{t+1}$. The agent recieved a immediate reward of $R_a(s_t, s_{t+1})$ for taking action $a_t$. Using this reward, the agent adjusts its $Q(s, a)$ values using the following equation \cite{Watkins1992}:
 
 \begin{equation}
 \label{eq:q}
@@ -236,21 +236,21 @@ where
 \underset{a}{max}Q(s_{t+1}, a)
 \end{equation}
 
-is the maximum $Q(s, a)$ value that the agent can achieve from state $s_{t+1}$. This is determined by maximizing the $Q(s_{t+1}, a)$ value for every possible action that can be performed on state $s_{t+1}$. In the case of Sokoban, this means maximizing on the actions: up, down, left, and right. This results in the agents ability to select actions that will produce the greatest reward. In a sense, the agent is maximizing the reward that they recieve. 
+is the maximum $Q(s, a)$ value that the agent can achieve from state $s_{t+1}$. This is determined by maximizing the $Q(s_{t+1}, a)$ value for every possible action that can be performed on state $s_{t+1}$. In the case of Sokoban, this means maximizing on the actions: up, down, left, and right. This results in the agent's ability to select actions that will produce the greatest reward. In a sense, the agent is maximizing the reward that they receive. 
 
-In equation \ref{eq:q}, the learning rate is described using $\alpha \in (0, 1)$, and the discount factor is described using $\gamma \in (0, 1)$. The learning rate represents the rate at which the agent updates the $Q(s, a)$ values. When the learning rate is 0, the values will never change, meaning the agent will never learn. When the learning rate is 1, the agent will consider only the most recent information \cite{Littman94markovgames}. The discount factor controls the effect of future rewards in the decision making of the agent \cite{Littman94markovgames}. A discount factor of 0 will cause the agent to place emphasis on current rewards, and a discount factor of 1 will cause the agent to place emphasis on future rewards \cite{Littman94markovgames}. Our implementation utilzed a learning rate of 0.1 and a discount factor of 0.9. It is worth mentioning that the optimal learning rate and discount factor were not used in our implementation.
+In equation \ref{eq:q}, the learning rate is described using $\alpha \in (0, 1)$, and the discount factor is described using $\gamma \in (0, 1)$. The learning rate represents the rate at which the agent updates the $Q(s, a)$ values. When the learning rate is 0, the values will never change, meaning the agent will never learn. When the learning rate is 1, the agent will consider only the most recent information \cite{Littman94markovgames}. The discount factor controls the effect of future rewards in the decision making of the agent \cite{Littman94markovgames}. A discount factor of 0 will cause the agent to place emphasis on current rewards, and a discount factor of 1 will cause the agent to place emphasis on future rewards \cite{Littman94markovgames}. Our implementation utilizes a learning rate of 0.1 and a discount factor of 0.9. It is worth mentioning that the optimal learning rate and discount factor were not used in our implementation.
 
 %--------------------------------------------------------------------------------
 \SubSection{Rewards}
 
-Rewards are one of the major building blocks of Q-Learning.  If you recall, a reward is given to an agent once an action $a_t$ is perfomed on a state $s_t$.  Many Q-Learning algorithms implement a reward function which, depending on the outcome state $s_{t+1}$, will result in a numberical reward.  These rewards will fall into one of two categories, negative or positive.  A positive reward should be given when a desirable outcome is acheived. The nature of the rewards implementation in the Q-Learning algorithm will cause the agent to perfer taking action $a_t$ at state $s_t$ again.  A negative reward should be given when a undesirable outcome.  Converse to the effect that the positive reward will have, the negative reward will cause the agent to avoid taking action $a_t$ at state $s_t$ again.  The formula for this reward is generally written as a difference function between the intial state $s_t$ and outcome state $s_{t+1}$ as seen in equation \ref{eq:reward}.
+Rewards are one of the major building blocks of Q-Learning.  If you recall, a reward is given to an agent once an action $a_t$ is performed on a state $s_t$.  Many Q-Learning algorithms implement a reward function which, depending on the outcome state $s_{t+1}$, will result in a numerical reward.  These rewards will fall into one of two categories, negative or positive.  A positive reward should be given when a desirable outcome is achieved. The nature of the rewards implementation in the Q-Learning algorithm will cause the agent to prefer taking action $a_t$ at state $s_t$ again.  A negative reward should be given when an undesirable outcome.  Converse to the effect that the positive reward will have, the negative reward will cause the agent to avoid taking action $a_t$ at state $s_t$ again.  The formula for this reward is generally written as a difference function between the initial state $s_t$ and outcome state $s_{t+1}$ as seen in equation \ref{eq:reward}.
 
 \begin{equation}
 reward \gets R_a(s_t, s_{t+1})
 \label{eq:reward}
 \end{equation}
 
-A list of the rewards given to our Sokoban agent for transitioning from state $s_t$ to outcome state $s_{t+1}$ can be seen in table \ref{table:rewards}.  We found that positive rewards should be given very rarely, and only in extremely desirable circumstances.  For instance, we gave the highest (positive) reward when a box was pushed onto a goal.  In the inital design of our solution, we gave the agent a reward of 0 for moving, because we saw no immediate negative or positive effects from this.  However, in our final implementation, we gave a negative reward to an agent for moving because this encouraged exploration, discouraged 'wondering', and prevented feedback loops.  A feedback loop occurs when the agent prefers a path which does not result in a solution, and prevents the agent from learning anything new.  For example, the agent would continuously push a box back and fourth. The reson for this is because both moving and pushing a box provided positive rewards to the agent. 
+A list of the rewards given to our Sokoban agent for transitioning from state $s_t$ to outcome state $s_{t+1}$ can be seen in table \ref{table:rewards}.  We found that positive rewards should be given very rarely, and only in extremely desirable circumstances.  For instance, we gave the highest (positive) reward when a box was pushed onto a goal.  In the initial design of our solution, we gave the agent a reward of 0 for moving, because we saw no immediate negative or positive effects from this.  However, in our final implementation, we gave a negative reward to an agent for moving because this encouraged exploration, discouraged 'wondering', and prevented feedback loops.  A feedback loop occurs when the agent prefers a path which does not result in a solution, and prevents the agent from learning anything new.  For example, the agent would continuously push a box back and forth. The reason for this is because both moving and pushing a box provided positive rewards to the agent. 
 
 In the development of a successful Q-Learning algorithm, we found the adjustment of the rewards to provide the most significant impact on the success rate of the solver.
 
@@ -277,7 +277,7 @@ In the development of a successful Q-Learning algorithm, we found the adjustment
 %--------------------------------------------------------------------------------
 \SubSection{Implementation}
 
-Algorithm \ref{alg:q_learning} represents the entry point for the Sokoban solver.  An initial state $s_0$ and desired episodes will be used to run an iterative learning process on the state.  An episode represents one iteration of learning from intial state to terminal state.  A larger number of episodes run during Q-Learning will result in a more optimal solution.
+Algorithm \ref{alg:q_learning} represents the entry point for the Sokoban solver.  An initial state $s_0$ and desired episodes will be used to run an iterative learning process on the state.  An episode represents one iteration of learning from initial state to terminal state.  A larger number of episodes run during Q-Learning will result in a more optimal solution.
 
 \begin{algorithm}
   \caption{Solver for Sokoban using Q-learning}
@@ -295,7 +295,7 @@ Algorithm \ref{alg:q_learning} represents the entry point for the Sokoban solver
 \label{alg:q_learning}
 \end{algorithm}
 
-Algorithm \ref{alg:run_episode} \cite{Russell}\cite{Guo} is where the majority of the Q-Learning is completed, and is used to determine the optimal strategy for solving a given Sokoban puzzle.  We run an episode of Q-Learning on an initial state with persistant Q values.  While state $s_t$ is not terminal, we pick an action which will maximize the Q value that can be reach, since this is by definition the highest rewarded action that the agent can take at $s_t$.  Once we take action $a_t$, we calculate the outcome state $s_{t+1}$ and update the Q value for $s_t$ taking action $a_t$.  This update of the Q value is effectivly causing the agent to learn based on the action that is taken.
+Algorithm \ref{alg:run_episode} \cite{Russell}\cite{Guo} is where the majority of the Q-Learning is completed, and is used to determine the optimal strategy for solving a given Sokoban puzzle.  We run an episode of Q-Learning on an initial state with persistent Q values.  While state $s_t$ is not terminal, we pick an action which will maximize the Q value that can be reach, since this is by definition the highest rewarded action that the agent can take at $s_t$.  Once we take action $a_t$, we calculate the outcome state $s_{t+1}$ and update the Q value for $s_t$ taking action $a_t$.  This update of the Q value is effectively causing the agent to learn based on the action that is taken.
 
 \begin{algorithm}
   \caption{Runs a single episode of Q-learning}
@@ -320,7 +320,7 @@ Algorithm \ref{alg:run_episode} \cite{Russell}\cite{Guo} is where the majority o
   \label{alg:run_episode}
 \end{algorithm}
 
-Algorithm \ref{alg:maximize_q} is used to calculate the maximum Q value that can be reached in a single action $a_t$ from state $s_t$.  A simple iteration over the actions possible at that state will yeild the maximum Q value.  Similarly, Algorithm \ref{alg:maximize_action} is used to find the action which will yeild the maximum Q value.  If many action will result in an equal Q value, we randomly pick one.  In the sokoban puzzle, these two algorithms are the maim logic for the agent to use its learned knowlege to perform actions reulting in the highest possible reward.  Since the sokoban agent can take only one of four possible actions - up, down, left, and right - they must look at each of these and make an informed decision to which will produce the highest reward.  If there are more than one action that produces the hightest value, the agent will select a random action from that set.
+Algorithm \ref{alg:maximize_q} is used to calculate the maximum Q value that can be reached in a single action $a_t$ from state $s_t$.  A simple iteration over the actions possible at that state will yield the maximum Q value.  Similarly, Algorithm \ref{alg:maximize_action} is used to find the action which will yield the maximum Q value.  If many action will result in an equal Q value, we randomly pick one.  In the sokoban puzzle, these two algorithms are the main logic for the agent to use its learned knowledge to perform actions resulting in the highest possible reward.  Since the sokoban agent can take only one of four possible actions - up, down, left, and right - they must look at each of these and make an informed decision to which will produce the highest reward.  If there are more than one action that produces the highest value, the agent will select a random action from that set.
 
 \begin{algorithm}
   \caption{Returns the maximum Q value reachable from a state in a single action}
@@ -339,7 +339,7 @@ Algorithm \ref{alg:maximize_q} is used to calculate the maximum Q value that can
 \end{algorithm}
 
 \begin{algorithm}
-  \caption{Returns the action which will acheive the maximum q value reachable from a state}
+  \caption{Returns the action which will achieve the maximum q value reachable from a state}
   \begin{algorithmic}[1]
     \Function {MaximizeAction}{state, Q}
       \State $max\gets -\infty$
@@ -358,10 +358,10 @@ Algorithm \ref{alg:maximize_q} is used to calculate the maximum Q value that can
   \label{alg:maximize_action}
 \end{algorithm}
 
-Algorithm \ref{alg:take_action} is used to perform action $a_t$ on state $s_t$ which will produce an outcome state $s_{t+1}$.  Because this is highly dependent on the implementation your Sokoban puzzle, this has been left, for the most part, unimplemented.  In our final implementation of the Sokoban solver, we encorperated our reward function into this algorithm.  When action $a_t$ is performed on state $s_t$ it produces an oucome state $s_{t+1}$ as well as returning an appropriate reward for the transition.
+Algorithm \ref{alg:take_action} is used to perform action $a_t$ on state $s_t$ which will produce an outcome state $s_{t+1}$.  Because this is highly dependent on the implementation your Sokoban puzzle, this has been left, for the most part, unimplemented.  In our final implementation of the Sokoban solver, we incorporated our reward function into this algorithm.  When action $a_t$ is performed on state $s_t$ it produces an outcome state $s_{t+1}$ as well as returning an appropriate reward for the transition.
 
 \begin{algorithm}
-  \caption{Returns the resulting state after an action is taken on an intial state}
+  \caption{Returns the resulting state after an action is taken on an initial state}
   \begin{algorithmic}[1]
     \Function {TakeAction}{state, action}
       \State \Return state after action is taken
@@ -417,9 +417,9 @@ The level that produced the results in figure \ref{fig:h} takes a minimum of 30 
 %--- Future Works ----------------------------------------------------------------
 \Section{Future Works}
 
-In future implementations of this experiment, it will be fundemental that different combinations of learning rate and discount factor are tested, analysing the correlation it has on the solver.  Within the experiment that was conducted, we selected the learning rate and discount factor based on the immediate correlation that was seen with the success rate of the solver; by no means, however, are these values ($learning rate \gets 0.20$, $discount factor \gets 0.80$) the most optimal.  Moreover, an experiment using a dynamic learning rate and discount factor should be performed, determining if it has any correlation with the success rate or speed of the solver.  We theorize that if we begin with a higher learning rate and, throughout the learning process, gradually diminish the rate, it would have a strong effect on the success rate of the solver, modeling that of a human and our learning process.
+In future implementations of this experiment, it will be fundamental that different combinations of learning rate and discount factor are tested, analysing the correlation it has on the solver.  Within the experiment that was conducted, we selected the learning rate and discount factor based on the immediate correlation that was seen with the success rate of the solver; by no means, however, are these values ($learning rate \gets 0.20$, $discount factor \gets 0.80$) the most optimal.  Moreover, an experiment using a dynamic learning rate and discount factor should be performed, determining if it has any correlation with the success rate or speed of the solver.  We theorize that if we begin with a higher learning rate and, throughout the learning process, gradually diminish the rate, it would have a strong effect on the success rate of the solver, modeling that of a human and our learning process.
 
-Also, we would like to experiment with different types of reward functions.  In the experiment that was conducted, static rewars were assigned to each type of scenario that could occur durring the puzzle.  We would like to apply a reward function for certain scenarios that is dependent on the overall progress towards success on the state.  For example, when the agent pushes a box onto a goal, the reward that is received would be dependent on how many goals are already covered, as apposed to a static value of $+1.00$.  We beleive that it is worth testing if this stratagy has any effect on the success and speed of the solver.
+Also, we would like to experiment with different types of reward functions.  In the experiment that was conducted, static rewards were assigned to each type of scenario that could occur during the puzzle.  We would like to apply a reward function for certain scenarios that is dependent on the overall progress towards success on the state.  For example, when the agent pushes a box onto a goal, the reward that is received would be dependent on how many goals are already covered, as opposed to a static value of $+1.00$.  We believe that it is worth testing if this strategy has any effect on the success and speed of the solver.
 
 It would also be worth testing various graph search algorithms used to solve Sokoban puzzles, such as A* and A* Iterative Deepening, in order to compare and contrast the effectiveness of these algorithms to that of Q-Learning.
 
