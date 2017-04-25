@@ -41,10 +41,14 @@
 \author{
 Joseph Herkness\\
 Oakland University\\
-jpherkness@oakland.edu\\
+318 Meadow Brook Rd\\
+Rochester, MI 48309\\
+jpherkness@oakland.edu
 \and
 Joshua Herkness\\
 Oakland University\\
+318 Meadow Brook Rd\\
+Rochester, MI 48309\\
 jrherkness@oakland.edu\\
 }
 
@@ -52,7 +56,7 @@ jrherkness@oakland.edu\\
 \thispagestyle{empty}
 
 \begin{abstract}
-Though the rules of Sokoban are rather simple, identifying the optimal action policy is not, even for computers. The high branching factor and precence of potential deadlocks greatly increase the complexity of the problem. While most graph search algorithms prove to provide a decent method of identifying the optimal action policy to a Sokoban problem, they rely on prior knowledge of the model, such as the positions of the goals. Unlike graph search algorithms, Q-Learning identifies the optimal action policy through exploring the problem space and recording the reward of actions taken. This method of reinforcement learning proves to be an interesiting area of study, especially if the agent can learn without previous knowledge of the model.
+Though the rules of Sokoban are rather simple, identifying the optimal action policy is not, even for computers. The high branching factor and precence of potential deadlocks greatly increase the complexity of the problem. While most graph search algorithms prove to provide a decent method of identifying the optimal action policy to a Sokoban problem, they identify the optimal action policy by exhaustively searching the problem space for a solution. Unlike graph search algorithms, Q-Learning identifies the optimal action policy through exploring the problem space and recording the reward of actions taken. This method of reinforcement learning proves to be an interesiting area of study.
 \end{abstract}
 
 \providecommand{\keywords}[1]{\textbf{\textit{Keywords---}} #1}
@@ -210,7 +214,7 @@ The state of a sokoban level can be encoded using a two dimensional arragement o
 %--- Related Work ---------------------------------------------------------------
 \Section{Related Work}
 
-Sokoban has been proven to be a PSPACE-Complete problem [1]. Other approaches to this problem include BFS, DFS, and solvers employing heuristic functions such as A* search.
+Previous implementations of solvers utilized graph search algorithms, such as Breadth-First and A*, to identify the optimal action policy. This is accomplished by constructing a graph of states where each state branches into four additional states. This branching is due to the fact that there are four possible actions that can be performed on each state. The goal of these graph search algorithms is to search for the state that takes the least number of action to create and is considered solved. Similar to the Q-Learning algorithm described in this paper, these graph search algorithms rely on an ability to reduce the search space through identification of deadlocks.
 
 %--- Q-Learning -----------------------------------------------------------------
 \Section{Q-Learning}
@@ -300,7 +304,7 @@ Algorithm \ref{alg:run_episode} [3][6] is where the majority of the Q-Learning i
       \State $state\gets \textnormal{initial state}$
       \State $\alpha \gets 0.1$ \Comment{Learning Rate}
       \State $\gamma \gets 0.9$ \Comment{Discount Factor}
-      \While {not Terminal?(state)}
+      \While {not state.Terminal?}
         \State $action\gets \Call{MaximizeAction}{state, Q}$
         \State $resultState\gets \Call{TakeAction}{state, action}$
         \State $maxQ\gets \Call{MaximizeQ}{state, Q}$
